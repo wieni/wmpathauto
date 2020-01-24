@@ -22,7 +22,7 @@ class SystemDate extends PatternTokenDependenciesBase
         array $configuration,
         $plugin_id, $plugin_definition
     ) {
-        $instance = new static($configuration, $plugin_id, $plugin_definition);
+        $instance = parent::create($container, $configuration, $plugin_id, $plugin_definition);
         $instance->entityTypeManager = $container->get('entity_type.manager');
 
         return $instance;
