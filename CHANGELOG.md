@@ -6,6 +6,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.2.0] - 2020-01-24
+### Added
+- Add menu link & url token support
+
+### Changed
+- Pass options array to dependency collectors
+- Change keyvalue key
+
+### Fixed
+- Call parents in SystemDate & SystemSite constructors
+
 ## [1.1.0] - 2020-01-24
 ### Added
 - Add support for entity & config dependencies
