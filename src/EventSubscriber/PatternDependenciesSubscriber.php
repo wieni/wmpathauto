@@ -99,7 +99,7 @@ class PatternDependenciesSubscriber implements EventSubscriberInterface
     protected function getStorage(string $suffix): KeyValueStoreInterface
     {
         return $this->keyValueFactory->get(
-            'wmpathauto.custom.alias.dependencies.' . $suffix
+            'wmpathauto.dependencies.' . $suffix
         );
     }
 }
