@@ -3,6 +3,7 @@
 namespace Drupal\wmpathauto;
 
 use Drupal\Core\Entity\EntityInterface;
+use Drupal\Core\Language\LanguageInterface;
 use Drupal\Core\Utility\Token;
 use Drupal\pathauto\AliasCleanerInterface;
 use Drupal\pathauto\PathautoPatternInterface;
@@ -59,6 +60,19 @@ class PatternDependencyResolver implements PatternDependencyResolverInterface
         $entityTokenType = $this->tokenEntityMapper->getTokenTypeForEntityType($entity->getEntityTypeId());
         $data = [$entityTokenType => $entity];
 
+        $langcode = $entity->language()->getId();
+        // Core does not handle aliases with language Not Applicable.
+        if ($langcode === LanguageInterface::LANGCODE_NOT_APPLICABLE) {
+            $langcode = LanguageInterface::LANGCODE_NOT_SPECIFIED;
+        }
+
+        $options = [
+            'clear' => true,
+            'callback' => [$this->aliasCleaner, 'cleanTokenValues'],
+            'langcode' => $langcode,
+            'pathauto' => true,
+        ];
+
         if (isset($tokensByType[$entityTokenType])) {
             // unset($tokensByType[$entityTokenType]);
         }
@@ -70,7 +84,7 @@ class PatternDependencyResolver implements PatternDependencyResolverInterface
 
             $this->patternTokenDependenciesManager
                 ->createInstance($type)
-                ->addDependencies($tokens, $data, $dependencies);
+                ->addDependencies($tokens, $data, $options, $dependencies);
         }
     }
 

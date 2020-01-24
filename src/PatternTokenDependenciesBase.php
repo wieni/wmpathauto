@@ -26,10 +26,10 @@ abstract class PatternTokenDependenciesBase extends PluginBase implements Patter
         return $instance;
     }
 
-    protected function addDependenciesByType(string $type, array $tokens, array $data, PatternDependencyCollectionInterface $dependencies): void
+    protected function addDependenciesByType(string $type, array $tokens, array $data, array $options, PatternDependencyCollectionInterface $dependencies): void
     {
         $this->manager
             ->createInstance($type)
-            ->addDependencies($tokens, $data, $dependencies);
+            ->addDependencies($tokens, $data, $options, $dependencies);
     }
 }

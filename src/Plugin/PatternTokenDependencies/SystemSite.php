@@ -28,7 +28,7 @@ class SystemSite extends PatternTokenDependenciesBase
         return $instance;
     }
 
-    public function addDependencies(array $tokens, array $data, PatternDependencyCollectionInterface $dependencies): void
+    public function addDependencies(array $tokens, array $data, array $options, PatternDependencyCollectionInterface $dependencies): void
     {
         foreach ($tokens as $token => $rawToken) {
             switch ($token) {

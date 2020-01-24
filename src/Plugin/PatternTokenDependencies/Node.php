@@ -30,7 +30,7 @@ class Node extends PatternTokenDependenciesBase
         return $instance;
     }
 
-    public function addDependencies(array $tokens, array $data, PatternDependencyCollectionInterface $dependencies): void
+    public function addDependencies(array $tokens, array $data, array $options, PatternDependencyCollectionInterface $dependencies): void
     {
         $entity = $data['node'];
 
@@ -51,7 +51,7 @@ class Node extends PatternTokenDependenciesBase
         }
 
         if ($createdTokens = $this->tokens->findWithPrefix($tokens, 'created')) {
-            $this->addDependenciesByType('date', $createdTokens, ['date' => $entity->getCreatedTime()], $dependencies);
+            $this->addDependenciesByType('date', $createdTokens, ['date' => $entity->getCreatedTime()], $options, $dependencies);
         }
     }
 }
