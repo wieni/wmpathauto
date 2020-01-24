@@ -1,8 +1,9 @@
 name: wmpathauto
 type: module
 description: Dynamic path aliases, pathauto patterns & automatic updating of aliases
-core: 8.x
+core_version_requirement: ^8.8 || ^9
 package: Wieni
 dependencies:
+    - hook_event_dispatcher
     - pathauto
     - token

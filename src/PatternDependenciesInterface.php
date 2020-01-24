@@ -7,5 +7,5 @@ use Drupal\Core\Entity\EntityInterface;
 
 interface PatternDependenciesInterface extends PluginInspectionInterface
 {
-    public function addDependencies(array &$dependencies, EntityInterface $entity): void;
+    public function addDependencies(PatternDependencyCollectionInterface $dependencies, EntityInterface $entity): void;
 }

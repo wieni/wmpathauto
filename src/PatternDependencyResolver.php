@@ -3,10 +3,8 @@
 namespace Drupal\wmpathauto;
 
 use Drupal\Core\Entity\EntityInterface;
-use Drupal\Core\Render\BubbleableMetadata;
 use Drupal\Core\Utility\Token;
 use Drupal\pathauto\AliasCleanerInterface;
-use Drupal\pathauto\AliasStorageHelperInterface;
 use Drupal\pathauto\PathautoPatternInterface;
 use Drupal\token\TokenEntityMapperInterface;
 
@@ -18,8 +16,6 @@ class PatternDependencyResolver implements PatternDependencyResolverInterface
     protected $tokenEntityMapper;
     /** @var AliasCleanerInterface */
     protected $aliasCleaner;
-    /** @var AliasStorageHelperInterface */
-    protected $aliasStorageHelper;
     /** @var AliasBuilderManager */
     protected $aliasBuilderManager;
     /** @var PatternBuilderManager */
@@ -33,7 +29,6 @@ class PatternDependencyResolver implements PatternDependencyResolverInterface
         Token $token,
         TokenEntityMapperInterface $tokenEntityMapper,
         AliasCleanerInterface $aliasCleaner,
-        AliasStorageHelperInterface $aliasStorageHelper,
         AliasBuilderManager $aliasBuilderManager,
         PatternBuilderManager $patternBuilderManager,
         PatternDependenciesManager $patternDependenciesManager,
@@ -42,77 +37,44 @@ class PatternDependencyResolver implements PatternDependencyResolverInterface
         $this->token = $token;
         $this->tokenEntityMapper = $tokenEntityMapper;
         $this->aliasCleaner = $aliasCleaner;
-        $this->aliasStorageHelper = $aliasStorageHelper;
         $this->aliasBuilderManager = $aliasBuilderManager;
         $this->patternBuilderManager = $patternBuilderManager;
         $this->patternDependenciesManager = $patternDependenciesManager;
         $this->patternTokenDependenciesManager = $patternTokenDependenciesManager;
     }
 
-    public function getDependencies(PathautoPatternInterface $pattern, EntityInterface $entity): array
+    public function getDependencies(PathautoPatternInterface $pattern, EntityInterface $entity): PatternDependencyCollectionInterface
     {
-        $dependencies = [
-            'aliases' => [],
-            'entities' => [],
-        ];
+        $dependencies = new PatternDependencyCollection;
 
         $this->addDependenciesFromTokens($dependencies, $pattern, $entity);
         $this->addDependenciesFromPlugins($dependencies, $pattern, $entity);
 
-        foreach ($dependencies['entities'] as $i => $dependantEntity) {
-            if ($dependantEntity instanceof EntityInterface) {
-                $source = '/' . $dependantEntity->toUrl()->getInternalPath();
-                $language = $dependantEntity->language()->getId();
-                $alias = $this->aliasStorageHelper->loadBySource($source, $language);
-
-                if ($alias) {
-                    $dependencies['aliases'][] = $alias['pid'];
-                }
-            }
-
-            unset($dependencies['entities'][$i]);
-        }
-
-        return $dependencies['aliases'];
+        return $dependencies;
     }
 
-    protected function addDependenciesFromTokens(array &$dependencies, PathautoPatternInterface $pattern, EntityInterface $entity): void
+    protected function addDependenciesFromTokens(PatternDependencyCollectionInterface $dependencies, PathautoPatternInterface $pattern, EntityInterface $entity): void
     {
-        $allTokens = $this->token->scan($pattern->getPattern());
-        $entityTokens = [
-            $this->tokenEntityMapper->getTokenTypeForEntityType($entity->getEntityTypeId()) => $entity,
-        ];
-        $tokensByType = array_diff_key($allTokens, $entityTokens);
+        $tokensByType = $this->token->scan($pattern->getPattern());
+        $entityTokenType = $this->tokenEntityMapper->getTokenTypeForEntityType($entity->getEntityTypeId());
+        $data = [$entityTokenType => $entity];
 
-        $options = [
-            'callback' => [$this->aliasCleaner, 'cleanTokenValues'],
-            'langcode' => $entity->language()->getId(),
-            'pathauto' => true,
-        ];
+        if (isset($tokensByType[$entityTokenType])) {
+            // unset($tokensByType[$entityTokenType]);
+        }
 
         foreach ($tokensByType as $type => $tokens) {
-            $replacementValues = $this->token->generate($type, $tokens, $entityTokens, $options, new BubbleableMetadata);
-
-            foreach ($tokens as $token => $rawToken) {
-                $possibleImplementations = [
-                    implode(':', [$type, $token]),
-                    $type,
-                ];
-
-                foreach ($possibleImplementations as $id) {
-                    if (!$this->patternTokenDependenciesManager->hasDefinition($id)) {
-                        continue;
-                    }
-
-                    $this->patternTokenDependenciesManager
-                        ->createInstance($id)
-                        ->addDependencies($token, $replacementValues[$rawToken], $dependencies);
-                }
+            if (!$this->patternTokenDependenciesManager->hasDefinition($type)) {
+                continue;
             }
+
+            $this->patternTokenDependenciesManager
+                ->createInstance($type)
+                ->addDependencies($tokens, $data, $dependencies);
         }
     }
 
-    protected function addDependenciesFromPlugins(array &$dependencies, PathautoPatternInterface $pattern, EntityInterface $entity): void
+    protected function addDependenciesFromPlugins(PatternDependencyCollectionInterface $dependencies, PathautoPatternInterface $pattern, EntityInterface $entity): void
     {
         $managers = [
             $this->patternDependenciesManager,

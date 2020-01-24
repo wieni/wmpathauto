@@ -2,9 +2,9 @@
 
 namespace Drupal\wmpathauto\Plugin\PatternTokenDependencies;
 
-use Drupal\Component\Plugin\PluginBase;
-use Drupal\Core\Plugin\ContainerFactoryPluginInterface;
-use Drupal\wmpathauto\PatternTokenDependenciesInterface;
+use Drupal\pathauto\AliasStorageHelperInterface;
+use Drupal\wmpathauto\PatternDependencyCollectionInterface;
+use Drupal\wmpathauto\PatternTokenDependenciesBase;
 use Drupal\wmsingles\Service\WmSingles as WmSinglesService;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
@@ -13,8 +13,10 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
  *     type = "wmsingles",
  * )
  */
-class WmSingles extends PluginBase implements PatternTokenDependenciesInterface, ContainerFactoryPluginInterface
+class WmSingles extends PatternTokenDependenciesBase
 {
+    /** @var AliasStorageHelperInterface */
+    protected $aliasStorageHelper;
     /** @var WmSinglesService */
     protected $wmSingles;
 
@@ -23,7 +25,8 @@ class WmSingles extends PluginBase implements PatternTokenDependenciesInterface,
         array $configuration,
         $plugin_id, $plugin_definition
     ) {
-        $instance = new static($configuration, $plugin_id, $plugin_definition);
+        $instance = parent::create($container, $configuration, $plugin_id, $plugin_definition);
+        $instance->aliasStorageHelper = $container->get('pathauto.alias_storage_helper');
 
         if ($container->has('wmsingles')) {
             $instance->wmSingles = $container->get('wmsingles');
@@ -32,18 +35,37 @@ class WmSingles extends PluginBase implements PatternTokenDependenciesInterface,
         return $instance;
     }
 
-    public function addDependencies(string $token, string $value, array &$dependencies): void
+    public function addDependencies(array $tokens, array $data, PatternDependencyCollectionInterface $dependencies): void
     {
         if (!$this->wmSingles) {
             return;
         }
 
-        [$entityTypeId, $tokenName] = explode(':', $token);
+        foreach ($tokens as $token => $rawToken) {
+            [$entityTypeId, $tokenName] = explode(':', $token);
 
-        if ($tokenName !== 'url') {
+            if ($tokenName === 'url') {
+                $this->addUrlDependencies($entityTypeId, $dependencies);
+            }
+        }
+    }
+
+    protected function addUrlDependencies(string $entityTypeId, PatternDependencyCollectionInterface $dependencies): void
+    {
+        $single = $this->wmSingles->getSingleByBundle($entityTypeId);
+
+        if (!$single) {
             return;
         }
 
-        $dependencies['entities'][] = $this->wmSingles->getSingleByBundle($entityTypeId);
+        $source = '/' . $single->toUrl()->getInternalPath();
+        $language = $single->language()->getId();
+        $alias = $this->aliasStorageHelper->loadBySource($source, $language);
+
+        if (!$alias) {
+            return;
+        }
+
+        $dependencies->addPathAlias($alias['pid']);
     }
 }

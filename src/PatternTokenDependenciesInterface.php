@@ -6,5 +6,5 @@ use Drupal\Component\Plugin\PluginInspectionInterface;
 
 interface PatternTokenDependenciesInterface extends PluginInspectionInterface
 {
-    public function addDependencies(string $token, string $value, array &$dependencies): void;
+    public function addDependencies(array $tokens, array $data, PatternDependencyCollectionInterface $dependencies): void;
 }
