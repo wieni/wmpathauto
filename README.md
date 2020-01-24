@@ -24,7 +24,38 @@ installed using Composer:
 ```
 
 ## How does it work?
-_TODO_
+### Dynamic path aliases
+Sometimes when defining pathauto patterns, you'll notice the token
+system is just too limited. This module supports building patterns and
+aliases in code using plugins with annotations, respectively
+`@AliasBuilder` and `@PatternBuilder`.
+
+### Dependencies
+When updating an entity with a path alias, all entities, configs and
+other path aliases that were used to build that alias are stored in the
+database. In the future, when one of those path aliases, entities or
+configs are updated, the path alias that depends on them will be
+automatically regenerated.
+
+There are multiple ways to define dependencies:
+
+### Automatic dependencies with tokens
+When your pathauto pattern uses supported tokens, dependencies will be
+automatically added based on those tokens. For example, if your pattern
+contains the `[site:name]` token, the aliases using this pattern will be
+regenerated when the site name is changed.
+
+Support for more token types can be added by creating plugins with the
+`@PatternTokenDependencies` annotation, defining the token type in the
+`type` parameter and implementing the
+`PatternTokenDependenciesInterface` interface.
+
+### Manual dependencies using plugins
+Dependencies can also be added manually by creating plugins with the
+`@PatternDependencies` annotation, implementing the
+`PatternDependenciesInterface` interface. Plugins with `AliasBuilder` or
+`PatternBuilder` annotations implementing the same interface are also
+considered.
 
 ## Changelog
 All notable changes to this project will be documented in the
