@@ -2,7 +2,6 @@
 
 namespace Drupal\wmpathauto\Plugin\PatternTokenDependencies;
 
-use Drupal\pathauto\AliasStorageHelperInterface;
 use Drupal\wmpathauto\PatternDependencyCollectionInterface;
 use Drupal\wmpathauto\PatternTokenDependenciesBase;
 use Drupal\wmsingles\Service\WmSingles as WmSinglesService;
@@ -15,8 +14,6 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
  */
 class WmSingles extends PatternTokenDependenciesBase
 {
-    /** @var AliasStorageHelperInterface */
-    protected $aliasStorageHelper;
     /** @var WmSinglesService */
     protected $wmSingles;
 
@@ -26,7 +23,6 @@ class WmSingles extends PatternTokenDependenciesBase
         $plugin_id, $plugin_definition
     ) {
         $instance = parent::create($container, $configuration, $plugin_id, $plugin_definition);
-        $instance->aliasStorageHelper = $container->get('pathauto.alias_storage_helper');
 
         if ($container->has('wmsingles')) {
             $instance->wmSingles = $container->get('wmsingles');
@@ -45,27 +41,12 @@ class WmSingles extends PatternTokenDependenciesBase
             [$entityTypeId, $tokenName] = explode(':', $token);
 
             if ($tokenName === 'url') {
-                $this->addUrlDependencies($entityTypeId, $dependencies);
+                $single = $this->wmSingles->getSingleByBundle($entityTypeId);
+
+                if ($alias = $this->getEntityAlias($single)) {
+                    $dependencies->addPathAlias($alias['pid']);
+                }
             }
         }
-    }
-
-    protected function addUrlDependencies(string $entityTypeId, PatternDependencyCollectionInterface $dependencies): void
-    {
-        $single = $this->wmSingles->getSingleByBundle($entityTypeId);
-
-        if (!$single) {
-            return;
-        }
-
-        $source = '/' . $single->toUrl()->getInternalPath();
-        $language = $single->language()->getId();
-        $alias = $this->aliasStorageHelper->loadBySource($source, $language);
-
-        if (!$alias) {
-            return;
-        }
-
-        $dependencies->addPathAlias($alias['pid']);
     }
 }
