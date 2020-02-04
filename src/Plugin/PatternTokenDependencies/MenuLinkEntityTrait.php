@@ -16,7 +16,7 @@ use Symfony\Component\Routing\Exception\RouteNotFoundException;
  */
 trait MenuLinkEntityTrait
 {
-    protected function getMenuLinkEntity($menuLink, string $langcode): ?MenuLinkContentInterface
+    protected function getMenuLinkEntity($menuLink, ?string $langcode = null): ?MenuLinkContentInterface
     {
         if ($menuLink instanceof MenuLinkContent) {
             $metadata = $menuLink->getPluginDefinition()['metadata'];
@@ -34,17 +34,32 @@ trait MenuLinkEntityTrait
             ->getStorage('menu_link_content')
             ->load($metadata['entity_id']);
 
-        if ($entity->isTranslatable() && $entity->hasTranslation($langcode)) {
+        if ($langcode && $entity->isTranslatable() && $entity->hasTranslation($langcode)) {
             return $entity->getTranslation($langcode);
         }
 
         return $entity;
     }
 
-    protected function getReferencedEntity(MenuLinkInterface $menuLink, string $langcode): ?EntityInterface
+    protected function getReferencedEntity($menuLink, ?string $langcode = null): ?EntityInterface
     {
-        $routeName = $menuLink->getRouteName();
-        $routeParameters = $menuLink->getRouteParameters();
+        $routeName = null;
+        $routeParameters = [];
+
+        if ($menuLink instanceof MenuLinkInterface) {
+            $routeName = $menuLink->getRouteName();
+            $routeParameters = $menuLink->getRouteParameters();
+        }
+
+        if ($menuLink instanceof MenuLinkContentInterface) {
+            $url = $menuLink->getUrlObject();
+            $routeName = $url->getRouteName();
+            $routeParameters = $url->getRouteParameters();
+        }
+
+        if (!$routeName) {
+            return null;
+        }
 
         try {
             $route = $this->routeProvider->getRouteByName($routeName);
@@ -65,7 +80,11 @@ trait MenuLinkEntityTrait
                 ->getStorage($entityTypeId)
                 ->load($entityId);
 
-            return $this->getTranslation($entity, $langcode);
+            if ($langcode) {
+                $entity = $this->getTranslation($entity, $langcode);
+            }
+
+            return $entity;
         }
 
         return null;

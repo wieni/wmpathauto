@@ -26,11 +26,18 @@ services:
             - '@plugin.manager.wmpathauto_pattern_dependencies'
             - '@plugin.manager.wmpathauto_pattern_token_dependencies'
 
+    wmpathauto.pattern.dependency_storage:
+        class: Drupal\wmpathauto\PatternDependencyStorage
+        arguments:
+            - '@keyvalue'
+
     wmpathauto.pattern_dependencies.subscriber:
         class: Drupal\wmpathauto\EventSubscriber\PatternDependenciesSubscriber
         arguments:
-            - '@keyvalue'
+            - '@entity_type.manager'
+            - '@router.route_provider'
             - '@wmpathauto.pattern.dependency_resolver'
+            - '@wmpathauto.pattern.dependency_storage'
         tags: [{ name: event_subscriber }]
 
     wmpathauto.pattern_builder.subscriber:
