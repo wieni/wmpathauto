@@ -84,6 +84,8 @@ class Node extends PatternTokenDependenciesBase
             return null;
         }
 
+        module_load_include('inc', 'token', 'token.tokens');
+
         return _token_menu_link_best_match($node, $links);
     }
 }
