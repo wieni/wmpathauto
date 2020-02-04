@@ -6,6 +6,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.3.0] - 2020-02-04
+### Added
+- Add PatternDependencyStorage service
+- Automatically add new menu links as dependencies of their referenced
+  entities
+
+### Fixed
+- Fix `Call to undefined function
+  Drupal\wmpathauto\Plugin\PatternTokenDependencies\_token_menu_link_best_match()`
+
 ## [1.2.0] - 2020-01-24
 ### Added
 - Add menu link & url token support
