@@ -74,7 +74,9 @@ class PatternDependencyResolver implements PatternDependencyResolverInterface
         ];
 
         if (isset($tokensByType[$entityTokenType])) {
-            // unset($tokensByType[$entityTokenType]);
+            // wmpathauto regenerates the alias on entity save,
+            // so no need to add these dependencies here
+            unset($tokensByType[$entityTokenType]);
         }
 
         foreach ($tokensByType as $type => $tokens) {
