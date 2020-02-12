@@ -18,7 +18,7 @@ class PatternBuilderManager extends DefaultPluginManager
             'Plugin/PatternBuilder',
             $namespaces,
             $moduleHandler,
-            AliasBuilderInterface::class,
+            PatternBuilderInterface::class,
             PatternBuilder::class
         );
         $this->alterInfo('wmpathauto_pattern_builder_info');
