@@ -69,6 +69,14 @@ class Node extends PatternTokenDependencyProviderBase
         if ($link && $menuTokens = $this->tokens->findWithPrefix($tokens, 'menu-link')) {
             $this->addDependenciesByType('menu-link', $menuTokens, ['menu-link' => $link], $options, $dependencies);
         }
+
+        $tokenData = [
+            'entity_type' => 'node',
+            'entity' => $node,
+            'token_type' => 'node',
+        ];
+
+        $this->addDependenciesByType('entity', $tokens, $tokenData, $options, $dependencies);
     }
 
     protected function getMenuLinkByNode(NodeInterface $node): ?MenuLinkInterface

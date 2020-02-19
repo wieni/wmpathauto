@@ -7,6 +7,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 ### Added
 - Add dependencies for all existing entities after module installation
+- Add support for entity reference field tokens
 
 ### Changed
 - Change dependencies to be entities instead of key_value entries
