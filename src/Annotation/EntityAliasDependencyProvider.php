@@ -7,6 +7,6 @@ use Drupal\Component\Annotation\Plugin;
 /**
  * @Annotation
  */
-class PatternDependencies extends Plugin
+class EntityAliasDependencyProvider extends Plugin
 {
 }

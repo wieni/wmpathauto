@@ -5,9 +5,9 @@ namespace Drupal\wmpathauto;
 use Drupal\Core\Cache\CacheBackendInterface;
 use Drupal\Core\Extension\ModuleHandlerInterface;
 use Drupal\Core\Plugin\DefaultPluginManager;
-use Drupal\wmpathauto\Annotation\PatternDependencies;
+use Drupal\wmpathauto\Annotation\EntityAliasDependencyProvider;
 
-class PatternDependenciesManager extends DefaultPluginManager
+class EntityAliasDependencyProviderManager extends DefaultPluginManager
 {
     public function __construct(
         \Traversable $namespaces,
@@ -18,8 +18,8 @@ class PatternDependenciesManager extends DefaultPluginManager
             'Plugin/PatternDependencies',
             $namespaces,
             $moduleHandler,
-            PatternDependenciesInterface::class,
-            PatternDependencies::class
+            EntityAliasDependencyProviderInterface::class,
+            EntityAliasDependencyProvider::class
         );
         $this->alterInfo('wmpathauto_pattern_dependencies_info');
         $this->setCacheBackend($cacheBackend, 'wmpathauto_pattern_dependencies');

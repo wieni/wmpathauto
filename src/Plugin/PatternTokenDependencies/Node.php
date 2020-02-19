@@ -6,8 +6,8 @@ use Drupal\Core\Entity\EntityTypeManagerInterface;
 use Drupal\Core\Menu\MenuLinkInterface;
 use Drupal\Core\Menu\MenuLinkManagerInterface;
 use Drupal\node\NodeInterface;
-use Drupal\wmpathauto\PatternDependencyCollectionInterface;
-use Drupal\wmpathauto\PatternTokenDependenciesBase;
+use Drupal\wmpathauto\EntityAliasDependencyCollectionInterface;
+use Drupal\wmpathauto\PatternTokenDependencyProviderBase;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
@@ -18,7 +18,7 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
  * @see hook_tokens
  * @see menu_ui_tokens
  */
-class Node extends PatternTokenDependenciesBase
+class Node extends PatternTokenDependencyProviderBase
 {
     /** @var EntityTypeManagerInterface */
     protected $entityTypeManager;
@@ -37,7 +37,7 @@ class Node extends PatternTokenDependenciesBase
         return $instance;
     }
 
-    public function addDependencies(array $tokens, array $data, array $options, PatternDependencyCollectionInterface $dependencies): void
+    public function addDependencies(array $tokens, array $data, array $options, EntityAliasDependencyCollectionInterface $dependencies): void
     {
         $node = $data['node'];
         $link = $this->getMenuLinkByNode($node);

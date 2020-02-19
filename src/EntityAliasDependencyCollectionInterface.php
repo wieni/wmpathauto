@@ -5,7 +5,7 @@ namespace Drupal\wmpathauto;
 use Drupal\Core\Config\Config;
 use Drupal\Core\Entity\EntityInterface;
 
-interface PatternDependencyCollectionInterface
+interface EntityAliasDependencyCollectionInterface
 {
     public function getAliases(): array;
 

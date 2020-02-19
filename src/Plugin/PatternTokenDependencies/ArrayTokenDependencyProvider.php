@@ -5,8 +5,8 @@ namespace Drupal\wmpathauto\Plugin\PatternTokenDependencies;
 use Drupal\Core\Entity\EntityTypeManagerInterface;
 use Drupal\Core\Language\LanguageManagerInterface;
 use Drupal\Core\Routing\RouteProviderInterface;
-use Drupal\wmpathauto\PatternDependencyCollectionInterface;
-use Drupal\wmpathauto\PatternTokenDependenciesBase;
+use Drupal\wmpathauto\EntityAliasDependencyCollectionInterface;
+use Drupal\wmpathauto\PatternTokenDependencyProviderBase;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
@@ -14,7 +14,7 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
  *     type = "array",
  * )
  */
-class ArrayTokenDependencies extends PatternTokenDependenciesBase
+class ArrayTokenDependencyProvider extends PatternTokenDependencyProviderBase
 {
     use MenuLinkEntityTrait;
 
@@ -38,7 +38,7 @@ class ArrayTokenDependencies extends PatternTokenDependenciesBase
         return $instance;
     }
 
-    public function addDependencies(array $tokens, array $data, array $options, PatternDependencyCollectionInterface $dependencies): void
+    public function addDependencies(array $tokens, array $data, array $options, EntityAliasDependencyCollectionInterface $dependencies): void
     {
         $array = $data['array'];
         $langcode = $options['langcode'] ?? $this->languageManager->getCurrentLanguage()->getId();

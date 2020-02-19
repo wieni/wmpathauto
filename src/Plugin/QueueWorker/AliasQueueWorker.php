@@ -45,17 +45,17 @@ class AliasQueueWorker extends QueueWorkerBase implements ContainerFactoryPlugin
     public function processItem($data)
     {
         $entity = $this->entityTypeManager
-            ->getStorage($data['entityTypeId'])
-            ->load($data['entityId']);
+            ->getStorage($data['type'])
+            ->load($data['id']);
 
         if (
             !$entity instanceof ContentEntityInterface
-            || !$entity->hasTranslation($data['langcode'])
+            || !$entity->hasTranslation($data['language'])
         ) {
             return;
         }
 
-        $entity = $entity->getTranslation($data['langcode']);
+        $entity = $entity->getTranslation($data['language']);
 
         $this->aliasGenerator->updateEntityAlias(
             $entity,

@@ -8,9 +8,9 @@ use Drupal\Core\Plugin\DefaultPluginManager;
 use Drupal\wmpathauto\Annotation\PatternTokenDependencies;
 
 /**
- * @method PatternTokenDependenciesInterface createInstance($plugin_id, array $configuration = [])
+ * @method PatternTokenDependencyProviderInterface createInstance($plugin_id, array $configuration = [])
  */
-class PatternTokenDependenciesManager extends DefaultPluginManager
+class PatternTokenDependencyProviderManager extends DefaultPluginManager
 {
     public function __construct(
         \Traversable $namespaces,
@@ -21,10 +21,10 @@ class PatternTokenDependenciesManager extends DefaultPluginManager
             'Plugin/PatternTokenDependencies',
             $namespaces,
             $moduleHandler,
-            PatternTokenDependenciesInterface::class,
+            PatternTokenDependencyProviderInterface::class,
             PatternTokenDependencies::class
         );
-        $this->alterInfo('wmpathauto_pattern_token_dependencies_info');
+        $this->alterInfo('pattern_token_dependencies');
         $this->setCacheBackend($cacheBackend, 'wmpathauto_pattern_token_dependencies');
     }
 }

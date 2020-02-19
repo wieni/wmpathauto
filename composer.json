@@ -12,8 +12,8 @@
     "require": {
         "php": ">=7.1.0",
         "drupal/core": "^8.8 || ^9.0",
-        "drupal/pathauto": "^1.6",
-        "drupal/hook_event_dispatcher": "^1.27"
+        "drupal/hook_event_dispatcher": "^1.27",
+        "drupal/pathauto": "^1.6"
     },
     "require-dev": {
         "ergebnis/composer-normalize": "^2.0",

@@ -2,8 +2,8 @@
 
 namespace Drupal\wmpathauto\Plugin\PatternTokenDependencies;
 
-use Drupal\wmpathauto\PatternDependencyCollectionInterface;
-use Drupal\wmpathauto\PatternTokenDependenciesBase;
+use Drupal\wmpathauto\EntityAliasDependencyCollectionInterface;
+use Drupal\wmpathauto\PatternTokenDependencyProviderBase;
 use Drupal\wmsingles\Service\WmSingles as WmSinglesService;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
@@ -12,7 +12,7 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
  *     type = "wmsingles",
  * )
  */
-class WmSingles extends PatternTokenDependenciesBase
+class WmSingles extends PatternTokenDependencyProviderBase
 {
     /** @var WmSinglesService */
     protected $wmSingles;
@@ -31,7 +31,7 @@ class WmSingles extends PatternTokenDependenciesBase
         return $instance;
     }
 
-    public function addDependencies(array $tokens, array $data, array $options, PatternDependencyCollectionInterface $dependencies): void
+    public function addDependencies(array $tokens, array $data, array $options, EntityAliasDependencyCollectionInterface $dependencies): void
     {
         if (!$this->wmSingles) {
             return;

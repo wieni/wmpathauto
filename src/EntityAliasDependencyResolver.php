@@ -6,10 +6,11 @@ use Drupal\Core\Entity\EntityInterface;
 use Drupal\Core\Language\LanguageInterface;
 use Drupal\Core\Utility\Token;
 use Drupal\pathauto\AliasCleanerInterface;
+use Drupal\pathauto\PathautoGeneratorInterface;
 use Drupal\pathauto\PathautoPatternInterface;
 use Drupal\token\TokenEntityMapperInterface;
 
-class PatternDependencyResolver implements PatternDependencyResolverInterface
+class EntityAliasDependencyResolver implements EntityAliasDependencyResolverInterface
 {
     /** @var Token */
     protected $token;
@@ -17,44 +18,51 @@ class PatternDependencyResolver implements PatternDependencyResolverInterface
     protected $tokenEntityMapper;
     /** @var AliasCleanerInterface */
     protected $aliasCleaner;
+    /** @var PathautoGeneratorInterface */
+    protected $aliasGenerator;
     /** @var AliasBuilderManager */
     protected $aliasBuilderManager;
     /** @var PatternBuilderManager */
     protected $patternBuilderManager;
-    /** @var PatternDependenciesManager */
+    /** @var EntityAliasDependencyProviderManager */
     protected $patternDependenciesManager;
-    /** @var PatternTokenDependenciesManager */
+    /** @var PatternTokenDependencyProviderManager */
     protected $patternTokenDependenciesManager;
 
     public function __construct(
         Token $token,
         TokenEntityMapperInterface $tokenEntityMapper,
         AliasCleanerInterface $aliasCleaner,
+        PathautoGeneratorInterface $aliasGenerator,
         AliasBuilderManager $aliasBuilderManager,
         PatternBuilderManager $patternBuilderManager,
-        PatternDependenciesManager $patternDependenciesManager,
-        PatternTokenDependenciesManager $patternTokenDependenciesManager
+        EntityAliasDependencyProviderManager $patternDependenciesManager,
+        PatternTokenDependencyProviderManager $patternTokenDependenciesManager
     ) {
         $this->token = $token;
         $this->tokenEntityMapper = $tokenEntityMapper;
         $this->aliasCleaner = $aliasCleaner;
+        $this->aliasGenerator = $aliasGenerator;
         $this->aliasBuilderManager = $aliasBuilderManager;
         $this->patternBuilderManager = $patternBuilderManager;
         $this->patternDependenciesManager = $patternDependenciesManager;
         $this->patternTokenDependenciesManager = $patternTokenDependenciesManager;
     }
 
-    public function getDependencies(PathautoPatternInterface $pattern, EntityInterface $entity): PatternDependencyCollectionInterface
+    public function getDependencies(EntityInterface $entity): EntityAliasDependencyCollectionInterface
     {
-        $dependencies = new PatternDependencyCollection;
+        $pattern = $this->aliasGenerator->getPatternByEntity($entity);
+        $dependencies = new EntityAliasDependencyCollection;
 
-        $this->addDependenciesFromTokens($dependencies, $pattern, $entity);
-        $this->addDependenciesFromPlugins($dependencies, $pattern, $entity);
+        if ($pattern) {
+            $this->addDependenciesFromTokens($dependencies, $pattern, $entity);
+            $this->addDependenciesFromPlugins($dependencies, $pattern, $entity);
+        }
 
         return $dependencies;
     }
 
-    protected function addDependenciesFromTokens(PatternDependencyCollectionInterface $dependencies, PathautoPatternInterface $pattern, EntityInterface $entity): void
+    protected function addDependenciesFromTokens(EntityAliasDependencyCollectionInterface $dependencies, PathautoPatternInterface $pattern, EntityInterface $entity): void
     {
         $tokensByType = $this->token->scan($pattern->getPattern());
         $entityTokenType = $this->tokenEntityMapper->getTokenTypeForEntityType($entity->getEntityTypeId());
@@ -73,12 +81,6 @@ class PatternDependencyResolver implements PatternDependencyResolverInterface
             'pathauto' => true,
         ];
 
-        if (isset($tokensByType[$entityTokenType])) {
-            // wmpathauto regenerates the alias on entity save,
-            // so no need to add these dependencies here
-            unset($tokensByType[$entityTokenType]);
-        }
-
         foreach ($tokensByType as $type => $tokens) {
             if (!$this->patternTokenDependenciesManager->hasDefinition($type)) {
                 continue;
@@ -90,7 +92,7 @@ class PatternDependencyResolver implements PatternDependencyResolverInterface
         }
     }
 
-    protected function addDependenciesFromPlugins(PatternDependencyCollectionInterface $dependencies, PathautoPatternInterface $pattern, EntityInterface $entity): void
+    protected function addDependenciesFromPlugins(EntityAliasDependencyCollectionInterface $dependencies, PathautoPatternInterface $pattern, EntityInterface $entity): void
     {
         $managers = [
             $this->patternDependenciesManager,
@@ -105,7 +107,7 @@ class PatternDependencyResolver implements PatternDependencyResolverInterface
 
             $builder = $manager->createInstance($pattern->id());
 
-            if (!$builder instanceof PatternDependenciesInterface) {
+            if (!$builder instanceof EntityAliasDependencyProviderInterface) {
                 continue;
             }
 

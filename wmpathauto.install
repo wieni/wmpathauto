@@ -1,0 +1,67 @@
+<?php
+
+use Drupal\Core\Entity\ContentEntityType;
+
+function wmpathauto_install()
+{
+    wmpathauto_update_8003();
+}
+
+/**
+ * Install entity_alias_dependency entity type
+ */
+function wmpathauto_update_8001()
+{
+    $updateManager = \Drupal::entityDefinitionUpdateManager();
+    $updateManager->installEntityType(new ContentEntityType([
+        'id' => 'entity_alias_dependency',
+        'base_table' => 'entity_alias_dependency',
+        'translatable' => false,
+        'entity_keys' => [
+            'id' => 'did',
+        ],
+    ]));
+}
+
+/**
+ * Remove unused key_value entries
+ */
+function wmpathauto_update_8002()
+{
+    \Drupal::database()
+        ->delete('key_value')
+        ->condition('collection', 'wmpathauto%', 'LIKE')
+        ->execute();
+}
+
+/**
+ * Add dependencies for all existing entities
+ */
+function wmpathauto_update_8003()
+{
+    $entityTypeManager = \Drupal::entityTypeManager();
+    $resolver = \Drupal::getContainer()
+        ->get('wmpathauto.entity_alias_dependency.resolver');
+    $repository = \Drupal::getContainer()
+        ->get('wmpathauto.entity_alias_dependency.repository');
+    $cache = \Drupal::getContainer()
+        ->get('entity.memory_cache');
+
+    foreach (['node', 'taxonomy_term'] as $entityTypeId) {
+        if (!$entityTypeManager->hasDefinition($entityTypeId)) {
+            continue;
+        }
+
+        $storage = $entityTypeManager->getStorage($entityTypeId);
+        $ids = $storage->getQuery()->execute();
+
+        foreach (array_chunk($ids, 20) as $chunk) {
+            foreach ($storage->loadMultiple($chunk) as $entity) {
+                $dependencies = $resolver->getDependencies($entity);
+                $repository->addDependencies($entity, $dependencies);
+            }
+
+            $cache->deleteAll();
+        }
+    }
+}

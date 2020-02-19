@@ -3,8 +3,8 @@
 namespace Drupal\wmpathauto\Plugin\PatternTokenDependencies;
 
 use Drupal\Core\Entity\EntityTypeManagerInterface;
-use Drupal\wmpathauto\PatternDependencyCollectionInterface;
-use Drupal\wmpathauto\PatternTokenDependenciesBase;
+use Drupal\wmpathauto\EntityAliasDependencyCollectionInterface;
+use Drupal\wmpathauto\PatternTokenDependencyProviderBase;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
@@ -12,7 +12,7 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
  *     type = "date",
  * )
  */
-class SystemDate extends PatternTokenDependenciesBase
+class SystemDate extends PatternTokenDependencyProviderBase
 {
     /** @var EntityTypeManagerInterface */
     protected $entityTypeManager;
@@ -28,7 +28,7 @@ class SystemDate extends PatternTokenDependenciesBase
         return $instance;
     }
 
-    public function addDependencies(array $tokens, array $data, array $options, PatternDependencyCollectionInterface $dependencies): void
+    public function addDependencies(array $tokens, array $data, array $options, EntityAliasDependencyCollectionInterface $dependencies): void
     {
         foreach ($tokens as $token => $rawToken) {
             switch ($token) {

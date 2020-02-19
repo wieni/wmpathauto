@@ -4,28 +4,27 @@ namespace Drupal\wmpathauto\EventSubscriber;
 
 use Drupal\Core\Config\ConfigCrudEvent;
 use Drupal\Core\Config\ConfigEvents;
-use Drupal\Core\KeyValueStore\KeyValueFactoryInterface;
-use Drupal\Core\KeyValueStore\KeyValueStoreInterface;
-use Drupal\Core\Queue\QueueFactory;
 use Drupal\hook_event_dispatcher\Event\Entity\EntityUpdateEvent;
 use Drupal\hook_event_dispatcher\Event\Path\PathUpdateEvent;
 use Drupal\hook_event_dispatcher\HookEventDispatcherInterface;
-use Drupal\wmpathauto\Plugin\QueueWorker\AliasQueueWorker;
+use Drupal\wmpathauto\EntityAliasDependencyInterface;
+use Drupal\wmpathauto\EntityAliasDependencyRepository;
+use Drupal\wmpathauto\EntityAliasDependencyResolverInterface;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
 class DependencyUpdateSubscriber implements EventSubscriberInterface
 {
-    /** @var KeyValueFactoryInterface */
-    protected $keyValueFactory;
-    /** @var QueueFactory */
-    protected $queueFactory;
+    /** @var EntityAliasDependencyResolverInterface */
+    protected $resolver;
+    /** @var EntityAliasDependencyRepository */
+    protected $repository;
 
     public function __construct(
-        KeyValueFactoryInterface $keyValueFactory,
-        QueueFactory $queueFactory
+        EntityAliasDependencyResolverInterface $resolver,
+        EntityAliasDependencyRepository $repository
     ) {
-        $this->keyValueFactory = $keyValueFactory;
-        $this->queueFactory = $queueFactory;
+        $this->resolver = $resolver;
+        $this->repository = $repository;
     }
 
     public static function getSubscribedEvents()
@@ -39,41 +38,39 @@ class DependencyUpdateSubscriber implements EventSubscriberInterface
 
     public function onPathUpdate(PathUpdateEvent $event): void
     {
-        $this->queueDependents('pid:' . $event->getPid());
+        // Update entity aliases depending on this path
+        $this->repository->updateEntityAliasesByType(
+            EntityAliasDependencyInterface::TYPE_PATH_ALIAS,
+            $event->getPid()
+        );
     }
 
     public function onConfigUpdate(ConfigCrudEvent $event): void
     {
-        $this->queueDependents('config:' . $event->getConfig()->getName());
+        // Update entity aliases depending on this config
+        $this->repository->updateEntityAliasesByType(
+            EntityAliasDependencyInterface::TYPE_CONFIG,
+            $event->getConfig()->getName()
+        );
     }
 
     public function onEntityUpdate(EntityUpdateEvent $event): void
     {
         $entity = $event->getEntity();
-        $suffix = implode(':', [
-            'entity',
-            $entity->getEntityTypeId(),
-            $entity->id(),
-        ]);
 
-        $this->queueDependents($suffix);
-    }
+        // If the updated entity has a pathauto pattern,
+        // resolve and add its dependencies
+        $dependencies = $this->resolver->getDependencies($entity);
+        $this->repository->addDependencies($entity, $dependencies);
 
-    protected function queueDependents(string $suffix): void
-    {
-        $queue = $this->queueFactory->get(AliasQueueWorker::ID);
-        $storage = $this->getStorage($suffix);
-
-        // Queue all entities depending on this pid
-        foreach ($storage->getAll() as $dependent) {
-            $queue->createItem($dependent);
-        }
-    }
-
-    protected function getStorage(string $suffix): KeyValueStoreInterface
-    {
-        return $this->keyValueFactory->get(
-            'wmpathauto.dependencies.' . $suffix
+        // Update entity aliases depending on this entity
+        $this->repository->updateEntityAliasesByType(
+            EntityAliasDependencyInterface::TYPE_ENTITY,
+            implode(':', [
+                $entity->getEntityTypeId(),
+                $entity->id(),
+                $entity->language()->getId(),
+            ])
         );
     }
 }

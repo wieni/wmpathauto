@@ -9,8 +9,8 @@ use Drupal\Core\Menu\MenuLinkManagerInterface;
 use Drupal\Core\Routing\RouteProviderInterface;
 use Drupal\menu_link_content\MenuLinkContentInterface;
 use Drupal\menu_link_content\Plugin\Menu\MenuLinkContent;
-use Drupal\wmpathauto\PatternDependencyCollectionInterface;
-use Drupal\wmpathauto\PatternTokenDependenciesBase;
+use Drupal\wmpathauto\EntityAliasDependencyCollectionInterface;
+use Drupal\wmpathauto\PatternTokenDependencyProviderBase;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
@@ -18,7 +18,7 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
  *     type = "menu-link",
  * )
  */
-class MenuLink extends PatternTokenDependenciesBase
+class MenuLink extends PatternTokenDependencyProviderBase
 {
     use MenuLinkEntityTrait;
 
@@ -45,7 +45,7 @@ class MenuLink extends PatternTokenDependenciesBase
         return $instance;
     }
 
-    public function addDependencies(array $tokens, array $data, array $options, PatternDependencyCollectionInterface $dependencies): void
+    public function addDependencies(array $tokens, array $data, array $options, EntityAliasDependencyCollectionInterface $dependencies): void
     {
         $langcode = $options['langcode'] ?? $this->languageManager->getCurrentLanguage()->getId();
 
@@ -73,11 +73,17 @@ class MenuLink extends PatternTokenDependenciesBase
                 }
             }
 
-            if ($name === 'parent' && $parentId = $linkPlugin->getParent()) {
-                $this->addDependenciesByType('menu-link', ['menu-link:title' => null], ['menu-link' => $this->getMenuLink($parentId)], $options, $dependencies);
+            if ($name === 'parent') {
+                $this->addDependenciesByType('menu-link', ['menu-link:title' => null], ['menu-link' => $linkPlugin], $options, $dependencies);
+
+                if ($parentId = $linkPlugin->getParent()) {
+                    $this->addDependenciesByType('menu-link', ['menu-link:title' => null], ['menu-link' => $this->getMenuLink($parentId)], $options, $dependencies);
+                }
             }
 
             if ($name === 'parents') {
+                $this->addDependenciesByType('menu-link', ['menu-link:title' => null], ['menu-link' => $linkPlugin], $options, $dependencies);
+
                 foreach ($this->getMenuLinkParents($linkPlugin) as $parent) {
                     $this->addDependenciesByType('menu-link', ['menu-link:title' => null], ['menu-link' => $parent], $options, $dependencies);
                 }
@@ -90,6 +96,10 @@ class MenuLink extends PatternTokenDependenciesBase
 
         if ($parentId = $linkPlugin->getParent()) {
             if ($parentTokens = $this->tokens->findWithPrefix($tokens, 'parent')) {
+                if ($linkEntity = $this->getMenuLinkEntity($linkPlugin, $langcode)) {
+                    $dependencies->addEntity($linkEntity);
+                }
+
                 $this->addDependenciesByType('menu-link', $parentTokens, ['menu-link' => $this->getMenuLink($parentId)], $options, $dependencies);
             }
 
@@ -101,6 +111,10 @@ class MenuLink extends PatternTokenDependenciesBase
         }
 
         if ($parentsTokens = $this->tokens->findWithPrefix($tokens, 'parents')) {
+            if ($linkEntity = $this->getMenuLinkEntity($linkPlugin, $langcode)) {
+                $dependencies->addEntity($linkEntity);
+            }
+
             if ($parents = $this->getMenuLinkParents($linkPlugin)) {
                 $this->addDependenciesByType('array', $parentsTokens, ['array' => $parents], $options, $dependencies);
             }

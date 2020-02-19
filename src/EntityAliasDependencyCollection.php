@@ -5,7 +5,7 @@ namespace Drupal\wmpathauto;
 use Drupal\Core\Config\Config;
 use Drupal\Core\Entity\EntityInterface;
 
-class PatternDependencyCollection implements PatternDependencyCollectionInterface
+class EntityAliasDependencyCollection implements EntityAliasDependencyCollectionInterface
 {
     /** @var string[] */
     protected $aliases = [];

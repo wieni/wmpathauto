@@ -1,60 +1,68 @@
 services:
-    plugin.manager.wmpathauto_alias_builder:
+    plugin.manager.alias_builder:
         class: Drupal\wmpathauto\AliasBuilderManager
         parent: default_plugin_manager
 
-    plugin.manager.wmpathauto_pattern_builder:
+    plugin.manager.pattern_builder:
         class: Drupal\wmpathauto\PatternBuilderManager
         parent: default_plugin_manager
 
-    plugin.manager.wmpathauto_pattern_dependencies:
-        class: Drupal\wmpathauto\PatternDependenciesManager
+    plugin.manager.entity_alias_dependency_provider:
+        class: Drupal\wmpathauto\EntityAliasDependencyProviderManager
         parent: default_plugin_manager
 
-    plugin.manager.wmpathauto_pattern_token_dependencies:
-        class: Drupal\wmpathauto\PatternTokenDependenciesManager
+    plugin.manager.pattern_token_dependency_provider:
+        class: Drupal\wmpathauto\PatternTokenDependencyProviderManager
         parent: default_plugin_manager
 
-    wmpathauto.pattern.dependency_resolver:
-        class: Drupal\wmpathauto\PatternDependencyResolver
+    wmpathauto.entity_alias_dependency.resolver:
+        class: Drupal\wmpathauto\EntityAliasDependencyResolver
         arguments:
             - '@token'
             - '@token.entity_mapper'
             - '@pathauto.alias_cleaner'
-            - '@plugin.manager.wmpathauto_alias_builder'
-            - '@plugin.manager.wmpathauto_pattern_builder'
-            - '@plugin.manager.wmpathauto_pattern_dependencies'
-            - '@plugin.manager.wmpathauto_pattern_token_dependencies'
+            - '@pathauto.generator'
+            - '@plugin.manager.alias_builder'
+            - '@plugin.manager.pattern_builder'
+            - '@plugin.manager.entity_alias_dependency_provider'
+            - '@plugin.manager.pattern_token_dependency_provider'
 
-    wmpathauto.pattern.dependency_storage:
-        class: Drupal\wmpathauto\PatternDependencyStorage
+    wmpathauto.entity_alias_dependency.repository:
+        class: Drupal\wmpathauto\EntityAliasDependencyRepository
         arguments:
-            - '@keyvalue'
+            - '@entity_type.manager'
+            - '@queue'
 
-    wmpathauto.pattern_dependencies.subscriber:
-        class: Drupal\wmpathauto\EventSubscriber\PatternDependenciesSubscriber
+    wmpathauto.entity_alias_dependency.update.subscriber:
+        class: Drupal\wmpathauto\EventSubscriber\DependencyUpdateSubscriber
+        arguments:
+            - '@wmpathauto.entity_alias_dependency.resolver'
+            - '@wmpathauto.entity_alias_dependency.repository'
+        tags: [{ name: event_subscriber }]
+
+    wmpathauto.entity_alias_dependency.delete.subscriber:
+        class: Drupal\wmpathauto\EventSubscriber\DependencyDeleteSubscriber
+        arguments:
+            - '@wmpathauto.entity_alias_dependency.repository'
+        tags: [{ name: event_subscriber }]
+
+    wmpathauto.menu_link_content.subscriber:
+        class: Drupal\wmpathauto\EventSubscriber\MenuLinkContentSubscriber
         arguments:
             - '@entity_type.manager'
             - '@router.route_provider'
-            - '@wmpathauto.pattern.dependency_resolver'
-            - '@wmpathauto.pattern.dependency_storage'
+            - '@wmpathauto.entity_alias_dependency.resolver'
+            - '@wmpathauto.entity_alias_dependency.repository'
         tags: [{ name: event_subscriber }]
 
     wmpathauto.pattern_builder.subscriber:
         class: Drupal\wmpathauto\EventSubscriber\PatternBuilderSubscriber
         arguments:
-            - '@plugin.manager.wmpathauto_pattern_builder'
+            - '@plugin.manager.pattern_builder'
         tags: [{ name: event_subscriber }]
 
     wmpathauto.alias_builder.subscriber:
         class: Drupal\wmpathauto\EventSubscriber\AliasBuilderSubscriber
         arguments:
-            - '@plugin.manager.wmpathauto_alias_builder'
-        tags: [{ name: event_subscriber }]
-
-    wmpathauto.dependency_update.subscriber:
-        class: Drupal\wmpathauto\EventSubscriber\DependencyUpdateSubscriber
-        arguments:
-            - '@keyvalue'
-            - '@queue'
+            - '@plugin.manager.alias_builder'
         tags: [{ name: event_subscriber }]

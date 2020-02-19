@@ -3,8 +3,8 @@
 namespace Drupal\wmpathauto\Plugin\PatternTokenDependencies;
 
 use Drupal\Core\Language\LanguageManagerInterface;
-use Drupal\wmpathauto\PatternDependencyCollectionInterface;
-use Drupal\wmpathauto\PatternTokenDependenciesBase;
+use Drupal\wmpathauto\EntityAliasDependencyCollectionInterface;
+use Drupal\wmpathauto\PatternTokenDependencyProviderBase;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
@@ -12,7 +12,7 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
  *     type = "url",
  * )
  */
-class Url extends PatternTokenDependenciesBase
+class Url extends PatternTokenDependencyProviderBase
 {
     /** @var LanguageManagerInterface */
     protected $languageManager;
@@ -28,7 +28,7 @@ class Url extends PatternTokenDependenciesBase
         return $instance;
     }
 
-    public function addDependencies(array $tokens, array $data, array $options, PatternDependencyCollectionInterface $dependencies): void
+    public function addDependencies(array $tokens, array $data, array $options, EntityAliasDependencyCollectionInterface $dependencies): void
     {
         $url = $data['url'];
         $path = $this->getPathFromUrl($url);

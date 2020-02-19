@@ -10,13 +10,13 @@ use Drupal\Core\Utility\Token;
 use Drupal\pathauto\AliasStorageHelperInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
-abstract class PatternTokenDependenciesBase extends PluginBase implements PatternTokenDependenciesInterface, ContainerFactoryPluginInterface
+abstract class PatternTokenDependencyProviderBase extends PluginBase implements PatternTokenDependencyProviderInterface, ContainerFactoryPluginInterface
 {
     /** @var Token */
     protected $tokens;
     /** @var AliasStorageHelperInterface */
     protected $aliases;
-    /** @var PatternTokenDependenciesManager */
+    /** @var PatternTokenDependencyProviderManager */
     protected $manager;
 
     public static function create(
@@ -27,18 +27,19 @@ abstract class PatternTokenDependenciesBase extends PluginBase implements Patter
         $instance = new static($configuration, $plugin_id, $plugin_definition);
         $instance->tokens = $container->get('token');
         $instance->aliases = $container->get('pathauto.alias_storage_helper');
-        $instance->manager = $container->get('plugin.manager.wmpathauto_pattern_token_dependencies');
+        $instance->manager = $container->get('plugin.manager.pattern_token_dependency_provider');
 
         return $instance;
     }
 
-    protected function addDependenciesByType(string $type, array $tokens, array $data, array $options, PatternDependencyCollectionInterface $dependencies): void
+    protected function addDependenciesByType(string $type, array $tokens, array $data, array $options, EntityAliasDependencyCollectionInterface $dependencies): void
     {
         $this->manager
             ->createInstance($type)
             ->addDependencies($tokens, $data, $options, $dependencies);
     }
 
+    /** TODO: Get from path field */
     protected function getEntityAlias(EntityInterface $entity): ?array
     {
         try {

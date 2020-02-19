@@ -5,6 +5,18 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+### Added
+- Add dependencies for all existing entities after module installation
+
+### Changed
+- Change dependencies to be entities instead of key_value entries
+- Rename most classes to be more logical
+
+### Fixed
+- Add an entity's own menu link as dependency when it has menu link parent(s) tokens
+- Re-resolve dependencies from a menu link's referenced entity after updating this menu link,
+since the menu link tree might have changed
+- Delete dependencies when the path, config or entity they are referencing are deleted
 
 ## [1.3.0] - 2020-02-04
 ### Added
