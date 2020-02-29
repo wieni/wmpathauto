@@ -53,8 +53,11 @@ trait MenuLinkEntityTrait
 
         if ($menuLink instanceof MenuLinkContentInterface) {
             $url = $menuLink->getUrlObject();
-            $routeName = $url->getRouteName();
-            $routeParameters = $url->getRouteParameters();
+
+            if ($url->isRouted()) {
+                $routeName = $url->getRouteName();
+                $routeParameters = $url->getRouteParameters();
+            }
         }
 
         if (!$routeName) {
