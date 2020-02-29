@@ -70,6 +70,9 @@ trait MenuLinkEntityTrait
             return null;
         }
 
+        $entityTypeId = null;
+        $entityId = null;
+
         if ($entityForm = $route->getDefault('_entity_form')) {
             [$entityTypeId] = explode('.', $entityForm);
             $entityId = $routeParameters[$entityTypeId];
