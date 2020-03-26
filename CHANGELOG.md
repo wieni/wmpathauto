@@ -19,6 +19,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 since the menu link tree might have changed
 - Delete dependencies when the path, config or entity they are referencing are deleted
 - Fix error when creating unrouted menu link
+- Fix base fields not being installed during module install
 
 ## [1.3.0] - 2020-02-04
 ### Added

@@ -1,6 +1,7 @@
 <?php
 
 use Drupal\Core\Entity\ContentEntityType;
+use Drupal\wmpathauto\Entity\EntityAliasDependency;
 
 function wmpathauto_install()
 {
@@ -13,14 +14,19 @@ function wmpathauto_install()
 function wmpathauto_update_8001()
 {
     $updateManager = \Drupal::entityDefinitionUpdateManager();
-    $updateManager->installEntityType(new ContentEntityType([
+
+    $entityType = new ContentEntityType([
         'id' => 'entity_alias_dependency',
         'base_table' => 'entity_alias_dependency',
         'translatable' => false,
         'entity_keys' => [
             'id' => 'did',
         ],
-    ]));
+    ]);
+
+    $definitions = EntityAliasDependency::baseFieldDefinitions($entityType);
+
+    $updateManager->installFieldableEntityType($entityType, $definitions);
 }
 
 /**
@@ -63,5 +69,33 @@ function wmpathauto_update_8003()
 
             $cache->deleteAll();
         }
+    }
+}
+
+/**
+ * Install entity_alias_dependency base fields
+ */
+function wmpathauto_update_8004()
+{
+    $updateManager = \Drupal::entityDefinitionUpdateManager();
+
+    $entityType = new ContentEntityType([
+        'id' => 'entity_alias_dependency',
+        'base_table' => 'entity_alias_dependency',
+        'translatable' => false,
+        'entity_keys' => [
+            'id' => 'did',
+        ],
+    ]);
+
+    $definitions = EntityAliasDependency::baseFieldDefinitions($entityType);
+
+    foreach ($definitions as $name => $definition) {
+        $updateManager->installFieldStorageDefinition(
+            $name,
+            $entityType->id(),
+            'wmpathauto',
+            $definition
+        );
     }
 }
