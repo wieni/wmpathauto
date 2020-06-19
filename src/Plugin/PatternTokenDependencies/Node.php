@@ -5,6 +5,7 @@ namespace Drupal\wmpathauto\Plugin\PatternTokenDependencies;
 use Drupal\Core\Entity\EntityTypeManagerInterface;
 use Drupal\Core\Menu\MenuLinkInterface;
 use Drupal\Core\Menu\MenuLinkManagerInterface;
+use Drupal\menu_link_content\MenuLinkContentInterface;
 use Drupal\node\NodeInterface;
 use Drupal\wmpathauto\EntityAliasDependencyCollectionInterface;
 use Drupal\wmpathauto\PatternTokenDependencyProviderBase;
@@ -79,7 +80,8 @@ class Node extends PatternTokenDependencyProviderBase
         $this->addDependenciesByType('entity', $tokens, $tokenData, $options, $dependencies);
     }
 
-    protected function getMenuLinkByNode(NodeInterface $node): ?MenuLinkInterface
+    /** @return MenuLinkInterface|MenuLinkContentInterface|null */
+    protected function getMenuLinkByNode(NodeInterface $node)
     {
         if ($node->getFieldDefinition('menu_link') && $menuLink = $node->menu_link->entity) {
             return $menuLink;
