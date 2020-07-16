@@ -1,6 +1,6 @@
 <?php
 
-namespace Drupal\wmpathauto\Plugin\PatternTokenDependencies;
+namespace Drupal\wmpathauto\Plugin\PatternTokenDependencyProvider;
 
 use Drupal\Core\Entity\EntityInterface;
 use Drupal\Core\Entity\EntityTypeManagerInterface;

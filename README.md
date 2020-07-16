@@ -46,14 +46,14 @@ contains the `[site:name]` token, the aliases using this pattern will be
 regenerated when the site name is changed.
 
 Support for more token types can be added by creating plugins with the
-`@PatternTokenDependencies` annotation, defining the token type in the
+`@PatternTokenDependencyProvider` annotation, defining the token type in the
 `type` parameter and implementing the
-`PatternTokenDependenciesInterface` interface.
+[`PatternTokenDependencyProviderInterface`](src/PatternTokenDependencyProviderInterface.php) interface.
 
 ### Manual dependencies using plugins
 Dependencies can also be added manually by creating plugins with the
-`@PatternDependencies` annotation, implementing the
-`PatternDependenciesInterface` interface. Plugins with `AliasBuilder` or
+`@EntityAliasDependencyProvider` annotation, implementing the
+[`EntityAliasDependencyProviderInterface`](src/EntityAliasDependencyProviderInterface.php) interface. Plugins with `AliasBuilder` or
 `PatternBuilder` annotations implementing the same interface are also
 considered.
 

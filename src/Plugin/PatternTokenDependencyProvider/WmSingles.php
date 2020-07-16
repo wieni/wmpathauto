@@ -1,20 +1,20 @@
 <?php
 
-namespace Drupal\wmpathauto\Plugin\PatternTokenDependencies;
+namespace Drupal\wmpathauto\Plugin\PatternTokenDependencyProvider;
 
+use Drupal\wmpathauto\Annotation\PatternTokenDependencyProvider;
 use Drupal\wmpathauto\EntityAliasDependencyCollectionInterface;
 use Drupal\wmpathauto\PatternTokenDependencyProviderBase;
-use Drupal\wmsingles\Service\WmSingles as WmSinglesService;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
- * @PatternTokenDependencies(
+ * @PatternTokenDependencyProvider(
  *     type = "wmsingles",
  * )
  */
 class WmSingles extends PatternTokenDependencyProviderBase
 {
-    /** @var WmSinglesService */
+    /** @var \Drupal\wmsingles\Service\WmSingles */
     protected $wmSingles;
 
     public static function create(

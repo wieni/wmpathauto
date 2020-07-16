@@ -7,7 +7,7 @@ use Drupal\Component\Annotation\Plugin;
 /**
  * @Annotation
  */
-class PatternTokenDependencies extends Plugin
+class PatternTokenDependencyProvider extends Plugin
 {
     /** @var string */
     public $type;

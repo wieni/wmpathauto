@@ -1,17 +1,18 @@
 <?php
 
-namespace Drupal\wmpathauto\Plugin\PatternTokenDependencies;
+namespace Drupal\wmpathauto\Plugin\PatternTokenDependencyProvider;
 
 use Drupal\Core\Entity\ContentEntityInterface;
 use Drupal\Core\Entity\EntityRepositoryInterface;
 use Drupal\Core\Entity\FieldableEntityInterface;
 use Drupal\image\Entity\ImageStyle;
+use Drupal\wmpathauto\Annotation\PatternTokenDependencyProvider;
 use Drupal\wmpathauto\EntityAliasDependencyCollectionInterface;
 use Drupal\wmpathauto\PatternTokenDependencyProviderBase;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
- * @PatternTokenDependencies(
+ * @PatternTokenDependencyProvider(
  *     type = "entity",
  * )
  *

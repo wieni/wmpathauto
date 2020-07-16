@@ -8,7 +8,7 @@ use Drupal\hook_event_dispatcher\Event\Entity\BaseEntityEvent;
 use Drupal\hook_event_dispatcher\HookEventDispatcherInterface;
 use Drupal\wmpathauto\EntityAliasDependencyRepositoryInterface;
 use Drupal\wmpathauto\EntityAliasDependencyResolverInterface;
-use Drupal\wmpathauto\Plugin\PatternTokenDependencies\MenuLinkEntityTrait;
+use Drupal\wmpathauto\Plugin\PatternTokenDependencyProvider\MenuLinkEntityTrait;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
 class MenuLinkContentSubscriber implements EventSubscriberInterface

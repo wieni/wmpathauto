@@ -1,14 +1,15 @@
 <?php
 
-namespace Drupal\wmpathauto\Plugin\PatternTokenDependencies;
+namespace Drupal\wmpathauto\Plugin\PatternTokenDependencyProvider;
 
 use Drupal\Core\Config\ConfigFactoryInterface;
+use Drupal\wmpathauto\Annotation\PatternTokenDependencyProvider;
 use Drupal\wmpathauto\EntityAliasDependencyCollectionInterface;
 use Drupal\wmpathauto\PatternTokenDependencyProviderBase;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
- * @PatternTokenDependencies(
+ * @PatternTokenDependencyProvider(
  *     type = "site",
  * )
  */

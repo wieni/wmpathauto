@@ -15,13 +15,13 @@ class EntityAliasDependencyProviderManager extends DefaultPluginManager
         ModuleHandlerInterface $moduleHandler
     ) {
         parent::__construct(
-            'Plugin/PatternDependencies',
+            'Plugin/EntityAliasDependencyProvider',
             $namespaces,
             $moduleHandler,
             EntityAliasDependencyProviderInterface::class,
             EntityAliasDependencyProvider::class
         );
-        $this->alterInfo('wmpathauto_pattern_dependencies_info');
-        $this->setCacheBackend($cacheBackend, 'wmpathauto_pattern_dependencies');
+        $this->alterInfo('wmpathauto_entity_alias_dependency_provider_info');
+        $this->setCacheBackend($cacheBackend, 'wmpathauto_entity_alias_dependency_providers');
     }
 }

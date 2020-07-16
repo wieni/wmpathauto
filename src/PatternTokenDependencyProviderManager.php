@@ -5,7 +5,7 @@ namespace Drupal\wmpathauto;
 use Drupal\Core\Cache\CacheBackendInterface;
 use Drupal\Core\Extension\ModuleHandlerInterface;
 use Drupal\Core\Plugin\DefaultPluginManager;
-use Drupal\wmpathauto\Annotation\PatternTokenDependencies;
+use Drupal\wmpathauto\Annotation\PatternTokenDependencyProvider;
 
 /**
  * @method PatternTokenDependencyProviderInterface createInstance($plugin_id, array $configuration = [])
@@ -18,13 +18,13 @@ class PatternTokenDependencyProviderManager extends DefaultPluginManager
         ModuleHandlerInterface $moduleHandler
     ) {
         parent::__construct(
-            'Plugin/PatternTokenDependencies',
+            'Plugin/PatternTokenDependencyProvider',
             $namespaces,
             $moduleHandler,
             PatternTokenDependencyProviderInterface::class,
-            PatternTokenDependencies::class
+            PatternTokenDependencyProvider::class
         );
-        $this->alterInfo('pattern_token_dependencies');
-        $this->setCacheBackend($cacheBackend, 'wmpathauto_pattern_token_dependencies');
+        $this->alterInfo('wmpathauto_pattern_token_dependency_provider_info');
+        $this->setCacheBackend($cacheBackend, 'wmpathauto_pattern_token_dependency_providers');
     }
 }
