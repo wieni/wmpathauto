@@ -36,6 +36,7 @@ services:
     wmpathauto.entity_alias_dependency.update.subscriber:
         class: Drupal\wmpathauto\EventSubscriber\DependencyUpdateSubscriber
         arguments:
+            - '@database'
             - '@wmpathauto.entity_alias_dependency.resolver'
             - '@wmpathauto.entity_alias_dependency.repository'
         tags: [{ name: event_subscriber }]
@@ -43,12 +44,14 @@ services:
     wmpathauto.entity_alias_dependency.delete.subscriber:
         class: Drupal\wmpathauto\EventSubscriber\DependencyDeleteSubscriber
         arguments:
+            - '@database'
             - '@wmpathauto.entity_alias_dependency.repository'
         tags: [{ name: event_subscriber }]
 
     wmpathauto.menu_link_content.subscriber:
         class: Drupal\wmpathauto\EventSubscriber\MenuLinkContentSubscriber
         arguments:
+            - '@database'
             - '@entity_type.manager'
             - '@router.route_provider'
             - '@wmpathauto.entity_alias_dependency.resolver'

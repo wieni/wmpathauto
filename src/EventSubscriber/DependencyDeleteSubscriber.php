@@ -4,6 +4,7 @@ namespace Drupal\wmpathauto\EventSubscriber;
 
 use Drupal\Core\Config\ConfigCrudEvent;
 use Drupal\Core\Config\ConfigEvents;
+use Drupal\Core\Database\Connection;
 use Drupal\Core\Entity\EntityInterface;
 use Drupal\wmpathauto\EntityAliasDependencyInterface;
 use Drupal\wmpathauto\EntityAliasDependencyRepository;
@@ -11,12 +12,16 @@ use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
 class DependencyDeleteSubscriber implements EventSubscriberInterface
 {
+    /** @var Connection */
+    protected $database;
     /** @var EntityAliasDependencyRepository */
     protected $repository;
 
     public function __construct(
+        Connection $database,
         EntityAliasDependencyRepository $repository
     ) {
+        $this->database = $database;
         $this->repository = $repository;
     }
 
@@ -29,6 +34,10 @@ class DependencyDeleteSubscriber implements EventSubscriberInterface
 
     public function onPathDelete(array $path): void
     {
+        if (!$this->isSchemaInstalled()) {
+            return;
+        }
+
         $this->repository->deleteDependenciesByType(
             EntityAliasDependencyInterface::TYPE_PATH_ALIAS,
             (int) $path['pid']
@@ -37,6 +46,10 @@ class DependencyDeleteSubscriber implements EventSubscriberInterface
 
     public function onConfigDelete(ConfigCrudEvent $event): void
     {
+        if (!$this->isSchemaInstalled()) {
+            return;
+        }
+
         $this->repository->deleteDependenciesByType(
             EntityAliasDependencyInterface::TYPE_CONFIG,
             $event->getConfig()->getName()
@@ -45,6 +58,10 @@ class DependencyDeleteSubscriber implements EventSubscriberInterface
 
     public function onEntityDelete(EntityInterface $entity): void
     {
+        if (!$this->isSchemaInstalled()) {
+            return;
+        }
+
         $this->repository->deleteDependenciesByType(
             EntityAliasDependencyInterface::TYPE_ENTITY,
             $value = implode(':', [
@@ -55,5 +72,11 @@ class DependencyDeleteSubscriber implements EventSubscriberInterface
         );
 
         $this->repository->deleteDependenciesByEntity($entity);
+    }
+
+    protected function isSchemaInstalled(): bool
+    {
+        return $this->database->schema()
+            ->tableExists('entity_alias_dependency');
     }
 }

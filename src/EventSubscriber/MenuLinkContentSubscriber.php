@@ -2,6 +2,7 @@
 
 namespace Drupal\wmpathauto\EventSubscriber;
 
+use Drupal\Core\Database\Connection;
 use Drupal\Core\Entity\EntityInterface;
 use Drupal\Core\Entity\EntityTypeManagerInterface;
 use Drupal\Core\Routing\RouteProviderInterface;
@@ -13,6 +14,8 @@ class MenuLinkContentSubscriber
 {
     use MenuLinkEntityTrait;
 
+    /** @var Connection */
+    protected $database;
     /** @var EntityTypeManagerInterface */
     protected $entityTypeManager;
     /** @var RouteProviderInterface */
@@ -23,11 +26,13 @@ class MenuLinkContentSubscriber
     protected $repository;
 
     public function __construct(
+        Connection $database,
         EntityTypeManagerInterface $entityTypeManager,
         RouteProviderInterface $routeProvider,
         EntityAliasDependencyResolverInterface $resolver,
         EntityAliasDependencyRepositoryInterface $repository
     ) {
+        $this->database = $database;
         $this->entityTypeManager = $entityTypeManager;
         $this->routeProvider = $routeProvider;
         $this->resolver = $resolver;
@@ -36,6 +41,10 @@ class MenuLinkContentSubscriber
 
     public function onMenuLinkUpdate(EntityInterface $entity): void
     {
+        if (!$this->isSchemaInstalled()) {
+            return;
+        }
+
         if (!$entity instanceof \Drupal\menu_link_content\MenuLinkContentInterface) {
             return;
         }
@@ -48,5 +57,11 @@ class MenuLinkContentSubscriber
         // since the menu link tree might have changed.
         $dependencies = $this->resolver->getDependencies($referencedEntity);
         $this->repository->addDependencies($referencedEntity, $dependencies);
+    }
+
+    protected function isSchemaInstalled(): bool
+    {
+        return $this->database->schema()
+            ->tableExists('entity_alias_dependency');
     }
 }

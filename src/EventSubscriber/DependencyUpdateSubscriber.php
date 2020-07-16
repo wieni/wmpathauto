@@ -4,6 +4,7 @@ namespace Drupal\wmpathauto\EventSubscriber;
 
 use Drupal\Core\Config\ConfigCrudEvent;
 use Drupal\Core\Config\ConfigEvents;
+use Drupal\Core\Database\Connection;
 use Drupal\Core\Entity\EntityInterface;
 use Drupal\wmpathauto\EntityAliasDependencyInterface;
 use Drupal\wmpathauto\EntityAliasDependencyRepository;
@@ -12,15 +13,19 @@ use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
 class DependencyUpdateSubscriber implements EventSubscriberInterface
 {
+    /** @var Connection */
+    protected $database;
     /** @var EntityAliasDependencyResolverInterface */
     protected $resolver;
     /** @var EntityAliasDependencyRepository */
     protected $repository;
 
     public function __construct(
+        Connection $database,
         EntityAliasDependencyResolverInterface $resolver,
         EntityAliasDependencyRepository $repository
     ) {
+        $this->database = $database;
         $this->resolver = $resolver;
         $this->repository = $repository;
     }
@@ -34,6 +39,10 @@ class DependencyUpdateSubscriber implements EventSubscriberInterface
 
     public function onPathUpdate(array $path): void
     {
+        if (!$this->isSchemaInstalled()) {
+            return;
+        }
+
         // Update entity aliases depending on this path
         $this->repository->updateEntityAliasesByType(
             EntityAliasDependencyInterface::TYPE_PATH_ALIAS,
@@ -43,6 +52,10 @@ class DependencyUpdateSubscriber implements EventSubscriberInterface
 
     public function onConfigUpdate(ConfigCrudEvent $event): void
     {
+        if (!$this->isSchemaInstalled()) {
+            return;
+        }
+
         // Update entity aliases depending on this config
         $this->repository->updateEntityAliasesByType(
             EntityAliasDependencyInterface::TYPE_CONFIG,
@@ -52,6 +65,10 @@ class DependencyUpdateSubscriber implements EventSubscriberInterface
 
     public function onEntityUpdate(EntityInterface $entity): void
     {
+        if (!$this->isSchemaInstalled()) {
+            return;
+        }
+
         // If the updated entity has a pathauto pattern,
         // resolve and add its dependencies
         $dependencies = $this->resolver->getDependencies($entity);
@@ -66,5 +83,11 @@ class DependencyUpdateSubscriber implements EventSubscriberInterface
                 $entity->language()->getId(),
             ])
         );
+    }
+
+    protected function isSchemaInstalled(): bool
+    {
+        return $this->database->schema()
+            ->tableExists('entity_alias_dependency');
     }
 }
