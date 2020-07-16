@@ -2,16 +2,14 @@
 
 namespace Drupal\wmpathauto\EventSubscriber;
 
+use Drupal\Core\Entity\EntityInterface;
 use Drupal\Core\Entity\EntityTypeManagerInterface;
 use Drupal\Core\Routing\RouteProviderInterface;
-use Drupal\hook_event_dispatcher\Event\Entity\BaseEntityEvent;
-use Drupal\hook_event_dispatcher\HookEventDispatcherInterface;
 use Drupal\wmpathauto\EntityAliasDependencyRepositoryInterface;
 use Drupal\wmpathauto\EntityAliasDependencyResolverInterface;
 use Drupal\wmpathauto\Plugin\PatternTokenDependencyProvider\MenuLinkEntityTrait;
-use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
-class MenuLinkContentSubscriber implements EventSubscriberInterface
+class MenuLinkContentSubscriber
 {
     use MenuLinkEntityTrait;
 
@@ -36,24 +34,13 @@ class MenuLinkContentSubscriber implements EventSubscriberInterface
         $this->repository = $repository;
     }
 
-    public static function getSubscribedEvents()
+    public function onMenuLinkUpdate(EntityInterface $entity): void
     {
-        $events[HookEventDispatcherInterface::ENTITY_INSERT][] = ['onMenuLinkUpdate'];
-        /** Make sure this runs before \Drupal\wmpathauto\EventSubscriber\DependencyUpdateSubscriber::onEntityUpdate */
-        $events[HookEventDispatcherInterface::ENTITY_UPDATE][] = ['onMenuLinkUpdate', 100];
-
-        return $events;
-    }
-
-    public function onMenuLinkUpdate(BaseEntityEvent $event): void
-    {
-        $menuLink = $event->getEntity();
-
-        if (!$menuLink instanceof \Drupal\menu_link_content\MenuLinkContentInterface) {
+        if (!$entity instanceof \Drupal\menu_link_content\MenuLinkContentInterface) {
             return;
         }
 
-        if (!$referencedEntity = $this->getReferencedEntity($menuLink)) {
+        if (!$referencedEntity = $this->getReferencedEntity($entity)) {
             return;
         }
 

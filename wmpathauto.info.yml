@@ -4,6 +4,5 @@ description: Dynamic path aliases, pathauto patterns & automatic updating of ali
 core_version_requirement: ^8.8 || ^9
 package: Wieni
 dependencies:
-    - hook_event_dispatcher
     - pathauto
     - token

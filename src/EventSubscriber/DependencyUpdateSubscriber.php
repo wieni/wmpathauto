@@ -4,9 +4,7 @@ namespace Drupal\wmpathauto\EventSubscriber;
 
 use Drupal\Core\Config\ConfigCrudEvent;
 use Drupal\Core\Config\ConfigEvents;
-use Drupal\hook_event_dispatcher\Event\Entity\EntityUpdateEvent;
-use Drupal\hook_event_dispatcher\Event\Path\PathUpdateEvent;
-use Drupal\hook_event_dispatcher\HookEventDispatcherInterface;
+use Drupal\Core\Entity\EntityInterface;
 use Drupal\wmpathauto\EntityAliasDependencyInterface;
 use Drupal\wmpathauto\EntityAliasDependencyRepository;
 use Drupal\wmpathauto\EntityAliasDependencyResolverInterface;
@@ -29,19 +27,17 @@ class DependencyUpdateSubscriber implements EventSubscriberInterface
 
     public static function getSubscribedEvents()
     {
-        $events[HookEventDispatcherInterface::PATH_UPDATE][] = ['onPathUpdate'];
         $events[ConfigEvents::SAVE][] = ['onConfigUpdate'];
-        $events[HookEventDispatcherInterface::ENTITY_UPDATE][] = ['onEntityUpdate'];
 
         return $events;
     }
 
-    public function onPathUpdate(PathUpdateEvent $event): void
+    public function onPathUpdate(array $path): void
     {
         // Update entity aliases depending on this path
         $this->repository->updateEntityAliasesByType(
             EntityAliasDependencyInterface::TYPE_PATH_ALIAS,
-            $event->getPid()
+            (int) $path['pid']
         );
     }
 
@@ -54,10 +50,8 @@ class DependencyUpdateSubscriber implements EventSubscriberInterface
         );
     }
 
-    public function onEntityUpdate(EntityUpdateEvent $event): void
+    public function onEntityUpdate(EntityInterface $entity): void
     {
-        $entity = $event->getEntity();
-
         // If the updated entity has a pathauto pattern,
         // resolve and add its dependencies
         $dependencies = $this->resolver->getDependencies($entity);

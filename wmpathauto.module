@@ -1,5 +1,6 @@
 <?php
 
+use Drupal\Core\Entity\EntityInterface;
 use Drupal\pathauto\PathautoPatternInterface;
 use Drupal\wmpathauto\Event\AliasAlterEvent;
 use Drupal\wmpathauto\Event\PatternAlterEvent;
@@ -18,4 +19,48 @@ function wmpathauto_pathauto_alias_alter(string &$alias, array $context)
         AliasAlterEvent::NAME,
         new AliasAlterEvent($alias, $context)
     );
+}
+
+function wmpathauto_entity_update(EntityInterface $entity)
+{
+    \Drupal::getContainer()
+        ->get('wmpathauto.menu_link_content.subscriber')
+        ->onEntityUpdate($entity);
+
+    \Drupal::getContainer()
+        ->get('wmpathauto.entity_alias_dependency.update.subscriber')
+        ->onEntityUpdate($entity);
+}
+
+
+function wmpathauto_entity_insert(EntityInterface $entity)
+{
+    \Drupal::getContainer()
+        ->get('wmpathauto.menu_link_content.subscriber')
+        ->onMenuLinkUpdate($entity);
+
+    \Drupal::getContainer()
+        ->get('wmpathauto.entity_alias_dependency.update.subscriber')
+        ->onEntityUpdate($entity);
+}
+
+function wmpathauto_entity_delete(EntityInterface $entity)
+{
+    \Drupal::getContainer()
+        ->get('wmpathauto.entity_alias_dependency.delete.subscriber')
+        ->onEntityDelete($entity);
+}
+
+function wmpathauto_path_update(array $path)
+{
+    \Drupal::getContainer()
+        ->get('wmpathauto.entity_alias_dependency.update.subscriber')
+        ->onPathUpdate($path);
+}
+
+function wmpathauto_path_delete(array $path)
+{
+    \Drupal::getContainer()
+        ->get('wmpathauto.entity_alias_dependency.delete.subscriber')
+        ->onPathDelete($path);
 }
