@@ -25,7 +25,7 @@ function wmpathauto_entity_update(EntityInterface $entity)
 {
     \Drupal::getContainer()
         ->get('wmpathauto.menu_link_content.subscriber')
-        ->onEntityUpdate($entity);
+        ->onMenuLinkUpdate($entity);
 
     \Drupal::getContainer()
         ->get('wmpathauto.entity_alias_dependency.update.subscriber')
