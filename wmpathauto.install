@@ -46,12 +46,9 @@ function wmpathauto_update_8002()
 function wmpathauto_update_8003()
 {
     $entityTypeManager = \Drupal::entityTypeManager();
-    $resolver = \Drupal::getContainer()
-        ->get('wmpathauto.entity_alias_dependency.resolver');
-    $repository = \Drupal::getContainer()
-        ->get('wmpathauto.entity_alias_dependency.repository');
     $cache = \Drupal::getContainer()
         ->get('entity.memory_cache');
+    $queue = \Drupal::queue(EntityAliasDependencyQueueWorker::ID);
 
     foreach (['node', 'taxonomy_term'] as $entityTypeId) {
         if (!$entityTypeManager->hasDefinition($entityTypeId)) {
@@ -63,8 +60,11 @@ function wmpathauto_update_8003()
 
         foreach (array_chunk($ids, 20) as $chunk) {
             foreach ($storage->loadMultiple($chunk) as $entity) {
-                $dependencies = $resolver->getDependencies($entity);
-                $repository->addDependencies($entity, $dependencies);
+                $queue->createItem([
+                    'id' => $entity->id(),
+                    'type' => $entity->getEntityTypeId(),
+                    'language' => $entity->language()->getId(),
+                ]);
             }
 
             $cache->deleteAll();
