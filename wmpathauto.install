@@ -119,10 +119,10 @@ function wmpathauto_update_8005(): void
         foreach ($storage->loadMultiple($chunk) as $dependency) {
             $dependency->set('dependency_type', 'entity');
             $dependency->set('dependency_value', sprintf(
-                    'path_alias.%s.%s',
-                    $dependency->getDependencyValue(),
-                    $dependency->language()->getId())
-            );
+                'path_alias.%s.%s',
+                $dependency->getDependencyValue(),
+                $dependency->get('entity_language')->value
+            ));
             $dependency->save();
         }
 
