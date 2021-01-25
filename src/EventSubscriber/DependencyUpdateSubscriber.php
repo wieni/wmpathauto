@@ -37,19 +37,6 @@ class DependencyUpdateSubscriber implements EventSubscriberInterface
         return $events;
     }
 
-    public function onPathUpdate(array $path): void
-    {
-        if (!$this->isSchemaInstalled()) {
-            return;
-        }
-
-        // Update entity aliases depending on this path
-        $this->repository->updateEntityAliasesByType(
-            EntityAliasDependencyInterface::TYPE_PATH_ALIAS,
-            (int) $path['pid']
-        );
-    }
-
     public function onConfigUpdate(ConfigCrudEvent $event): void
     {
         if (!$this->isSchemaInstalled()) {

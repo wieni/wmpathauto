@@ -36,8 +36,8 @@ class Url extends PatternTokenDependencyProviderBase
         $langcode = $options['langcode'] ?? $this->languageManager->getCurrentLanguage()->getId();
 
         foreach ($tokens as $name => $original) {
-            if ($name === 'path' && $alias = $this->aliases->loadBySource($path, $langcode)) {
-                $dependencies->addPathAlias($alias['pid']);
+            if ($name === 'path' && $alias = $this->getPathAlias($path, $langcode)) {
+                $dependencies->addEntity($alias);
             }
         }
     }

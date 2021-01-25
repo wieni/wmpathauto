@@ -51,8 +51,8 @@ class ArrayTokenDependencyProvider extends PatternTokenDependencyProviderBase
                         $dependencies->addEntity($linkEntity);
 
                         $referencedEntity = $this->getReferencedEntity($item, $langcode);
-                        if ($referencedEntity && $alias = $this->getEntityAlias($referencedEntity)) {
-                            $dependencies->addPathAlias($alias['pid']);
+                        if ($referencedEntity && $alias = $this->getPathAliasByEntity($referencedEntity)) {
+                            $dependencies->addEntity($alias);
                         }
                     }
                 }

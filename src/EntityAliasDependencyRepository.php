@@ -25,10 +25,6 @@ class EntityAliasDependencyRepository implements EntityAliasDependencyRepository
 
     public function addDependencies(EntityInterface $entity, EntityAliasDependencyCollectionInterface $dependencies): void
     {
-        foreach ($dependencies->getAliases() as $pid) {
-            $this->addDependency($entity, EntityAliasDependencyInterface::TYPE_PATH_ALIAS, $pid);
-        }
-
         foreach ($dependencies->getConfigs() as $dependentConfig) {
             $this->addDependency($entity, EntityAliasDependencyInterface::TYPE_CONFIG, $dependentConfig->getName());
         }

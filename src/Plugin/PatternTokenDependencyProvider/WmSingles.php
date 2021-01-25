@@ -43,8 +43,8 @@ class WmSingles extends PatternTokenDependencyProviderBase
             if ($tokenName === 'url') {
                 $single = $this->wmSingles->getSingleByBundle($entityTypeId);
 
-                if ($alias = $this->getEntityAlias($single)) {
-                    $dependencies->addPathAlias($alias['pid']);
+                if ($alias = $this->getPathAliasByEntity($single)) {
+                    $dependencies->addEntity($alias);
                 }
             }
         }

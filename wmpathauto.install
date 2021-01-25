@@ -2,6 +2,7 @@
 
 use Drupal\Core\Entity\ContentEntityType;
 use Drupal\wmpathauto\Entity\EntityAliasDependency;
+use Drupal\wmpathauto\Plugin\QueueWorker\EntityAliasDependencyQueueWorker;
 
 function wmpathauto_install()
 {
@@ -97,5 +98,34 @@ function wmpathauto_update_8004()
             'wmpathauto',
             $definition
         );
+    }
+}
+
+/**
+ * Change path dependencies to entity dependencies
+ */
+function wmpathauto_update_8005(): void
+{
+    $storage = \Drupal::entityTypeManager()
+        ->getStorage('entity_alias_dependency');
+    $cache = \Drupal::getContainer()
+        ->get('entity.memory_cache');
+    $ids = $storage->getQuery()
+        ->condition('dependency_type', 'pid')
+        ->execute();
+
+    foreach (array_chunk($ids, 20) as $chunk) {
+        /** @var EntityAliasDependency $dependency */
+        foreach ($storage->loadMultiple($chunk) as $dependency) {
+            $dependency->set('dependency_type', 'entity');
+            $dependency->set('dependency_value', sprintf(
+                    'path_alias.%s.%s',
+                    $dependency->getDependencyValue(),
+                    $dependency->language()->getId())
+            );
+            $dependency->save();
+        }
+
+        $cache->deleteAll();
     }
 }

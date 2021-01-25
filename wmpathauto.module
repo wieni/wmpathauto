@@ -50,17 +50,3 @@ function wmpathauto_entity_delete(EntityInterface $entity)
         ->get('wmpathauto.entity_alias_dependency.delete.subscriber')
         ->onEntityDelete($entity);
 }
-
-function wmpathauto_path_update(array $path)
-{
-    \Drupal::getContainer()
-        ->get('wmpathauto.entity_alias_dependency.update.subscriber')
-        ->onPathUpdate($path);
-}
-
-function wmpathauto_path_delete(array $path)
-{
-    \Drupal::getContainer()
-        ->get('wmpathauto.entity_alias_dependency.delete.subscriber')
-        ->onPathDelete($path);
-}

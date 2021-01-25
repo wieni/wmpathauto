@@ -7,17 +7,10 @@ use Drupal\Core\Entity\EntityInterface;
 
 class EntityAliasDependencyCollection implements EntityAliasDependencyCollectionInterface
 {
-    /** @var string[] */
-    protected $aliases = [];
     /** @var EntityInterface[] */
     protected $entities = [];
     /** @var Config[] */
     protected $configs = [];
-
-    public function getAliases(): array
-    {
-        return $this->aliases;
-    }
 
     public function getEntities(): array
     {
@@ -27,11 +20,6 @@ class EntityAliasDependencyCollection implements EntityAliasDependencyCollection
     public function getConfigs(): array
     {
         return $this->configs;
-    }
-
-    public function addPathAlias(string $pid): void
-    {
-        $this->aliases[$pid] = $pid;
     }
 
     public function addEntity(EntityInterface $entity): void

@@ -4,6 +4,20 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [3.0.1] - 2021-01-25
+### Fixed
+- Fix alias dependencies with type `pid` not working anymore in Drupal 9 due to aliases becoming entities
+  - Dependencies with type `pid` are changed to dependencies with type `entity`
+  - `EntityAliasDependencyInterface::TYPE_PATH_ALIAS` is removed
+  - `EntityAliasDependencyCollectionInterface::getAliases` is removed
+  - `EntityAliasDependencyCollectionInterface::addPathAlias` is removed
+  - `PatternTokenDependencyProviderBase::getEntityAlias(EntityInterface $entity): ?array` is replaced with 
+    `PatternTokenDependencyProviderBase::getPathAliasByEntity(EntityInterface $entity): ?PathAliasInterface`
+
+### Changed
+- During module install, add dependencies for all existing entities using a queue to prevent delays and/or memory 
+  issues. Make sure to run cron after install if that doesn't happen automatically.
+
 ## [3.0.0] - 2020-07-23
 ### Fixed
 - Prevent errors when entity_alias_dependency schema is not yet installed
