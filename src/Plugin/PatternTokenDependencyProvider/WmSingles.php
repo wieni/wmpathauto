@@ -41,7 +41,7 @@ class WmSingles extends PatternTokenDependencyProviderBase
             [$entityTypeId, $tokenName] = explode(':', $token);
 
             if ($tokenName === 'url') {
-                $single = $this->wmSingles->getSingleByBundle($entityTypeId);
+                $single = $this->wmSingles->getSingleByBundle($entityTypeId, $options['langcode'] ?? null);
 
                 if ($alias = $this->getPathAliasByEntity($single)) {
                     $dependencies->addEntity($alias);

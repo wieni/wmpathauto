@@ -15,6 +15,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
     `PatternTokenDependencyProviderBase::getPathAliasByEntity(EntityInterface $entity): ?PathAliasInterface`
 - Collect & update dependencies on entity translation insert
 - Add dependencies for all translations of existing entities as well
+- Fix wmsingles token parser adding wrong path alias as dependency
 
 ### Changed
 - During module install, add dependencies for all existing entities using a queue to prevent delays and/or memory 
