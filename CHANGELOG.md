@@ -13,6 +13,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - `EntityAliasDependencyCollectionInterface::addPathAlias` is removed
   - `PatternTokenDependencyProviderBase::getEntityAlias(EntityInterface $entity): ?array` is replaced with 
     `PatternTokenDependencyProviderBase::getPathAliasByEntity(EntityInterface $entity): ?PathAliasInterface`
+- Collect & update dependencies on entity translation insert
 
 ### Changed
 - During module install, add dependencies for all existing entities using a queue to prevent delays and/or memory 

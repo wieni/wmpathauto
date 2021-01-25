@@ -32,7 +32,6 @@ function wmpathauto_entity_update(EntityInterface $entity)
         ->onEntityUpdate($entity);
 }
 
-
 function wmpathauto_entity_insert(EntityInterface $entity)
 {
     \Drupal::getContainer()
@@ -42,6 +41,17 @@ function wmpathauto_entity_insert(EntityInterface $entity)
     \Drupal::getContainer()
         ->get('wmpathauto.entity_alias_dependency.update.subscriber')
         ->onEntityUpdate($entity);
+}
+
+function wmpathauto_entity_translation_insert(EntityInterface $translation)
+{
+    \Drupal::getContainer()
+        ->get('wmpathauto.menu_link_content.subscriber')
+        ->onMenuLinkUpdate($translation);
+
+    \Drupal::getContainer()
+        ->get('wmpathauto.entity_alias_dependency.update.subscriber')
+        ->onEntityUpdate($translation);
 }
 
 function wmpathauto_entity_delete(EntityInterface $entity)
