@@ -1,6 +1,7 @@
 <?php
 
 use Drupal\Core\Entity\ContentEntityType;
+use Drupal\Core\Entity\TranslatableInterface;
 use Drupal\wmpathauto\Entity\EntityAliasDependency;
 use Drupal\wmpathauto\Plugin\QueueWorker\EntityAliasDependencyQueueWorker;
 
@@ -66,6 +67,16 @@ function wmpathauto_update_8003()
                     'type' => $entity->getEntityTypeId(),
                     'language' => $entity->language()->getId(),
                 ]);
+
+                if ($entity instanceof TranslatableInterface) {
+                    foreach ($entity->getTranslationLanguages(false) as $language) {
+                        $queue->createItem([
+                            'id' => $entity->id(),
+                            'type' => $entity->getEntityTypeId(),
+                            'language' => $language->getId(),
+                        ]);
+                    }
+                }
             }
 
             $cache->deleteAll();
