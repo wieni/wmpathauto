@@ -74,6 +74,7 @@ class EntityAliasDependencyRepository implements EntityAliasDependencyRepository
             ->condition('dependency_type', $type)
             ->condition('dependency_value', $value);
 
+        $query->accessCheck(false);
         $ids = $query->execute();
 
         if (empty($ids)) {
@@ -93,6 +94,7 @@ class EntityAliasDependencyRepository implements EntityAliasDependencyRepository
             ->condition('dependency_type', $dependencyType)
             ->condition('dependency_value', $dependencyValue);
 
+        $query->accessCheck(false);
         $ids = $query->execute();
 
         if (empty($ids)) {
@@ -113,6 +115,7 @@ class EntityAliasDependencyRepository implements EntityAliasDependencyRepository
             ->condition('entity_type', $entity->getEntityTypeId())
             ->condition('entity_language', $entity->language()->getId());
 
+        $query->accessCheck(false);
         $ids = $query->execute();
 
         if (empty($ids)) {

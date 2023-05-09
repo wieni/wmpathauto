@@ -2,8 +2,8 @@
 
 namespace Drupal\wmpathauto\Event;
 
+use Drupal\Component\EventDispatcher\Event;
 use Drupal\pathauto\PathautoPatternInterface;
-use Symfony\Component\EventDispatcher\Event;
 
 final class PatternAlterEvent extends Event
 {

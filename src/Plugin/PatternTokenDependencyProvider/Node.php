@@ -95,7 +95,7 @@ class Node extends PatternTokenDependencyProviderBase
             return null;
         }
 
-        module_load_include('inc', 'token', 'token.tokens');
+        \Drupal::moduleHandler()->loadInclude('token', 'inc', 'token.tokens');
 
         return _token_menu_link_best_match($node, $links);
     }
