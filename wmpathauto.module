@@ -8,16 +8,16 @@ use Drupal\wmpathauto\Event\PatternAlterEvent;
 function wmpathauto_pathauto_pattern_alter(PathautoPatternInterface $pattern, array $context)
 {
     \Drupal::getContainer()->get('event_dispatcher')->dispatch(
-        PatternAlterEvent::NAME,
-        new PatternAlterEvent($pattern, $context)
+        new PatternAlterEvent($pattern, $context),
+        PatternAlterEvent::NAME
     );
 }
 
 function wmpathauto_pathauto_alias_alter(string &$alias, array $context)
 {
     \Drupal::getContainer()->get('event_dispatcher')->dispatch(
-        AliasAlterEvent::NAME,
-        new AliasAlterEvent($alias, $context)
+        new AliasAlterEvent($alias, $context),
+        AliasAlterEvent::NAME
     );
 }
 
