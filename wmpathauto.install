@@ -58,7 +58,7 @@ function wmpathauto_update_8003()
         }
 
         $storage = $entityTypeManager->getStorage($entityTypeId);
-        $ids = $storage->getQuery()->execute();
+        $ids = $storage->getQuery()->accessCheck(false)->execute();
 
         foreach (array_chunk($ids, 20) as $chunk) {
             foreach ($storage->loadMultiple($chunk) as $entity) {
@@ -123,6 +123,7 @@ function wmpathauto_update_8005(): void
         ->get('entity.memory_cache');
     $ids = $storage->getQuery()
         ->condition('dependency_type', 'pid')
+        ->accessCheck(false)
         ->execute();
 
     foreach (array_chunk($ids, 20) as $chunk) {
