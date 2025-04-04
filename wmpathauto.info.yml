@@ -1,7 +1,7 @@
 name: wmpathauto
 type: module
 description: Dynamic path aliases, pathauto patterns & automatic updating of aliases
-core_version_requirement: ^9.4 || ^10
+core_version_requirement: ^9.4 || ^10 || ^11
 package: Wieni
 dependencies:
     - pathauto
