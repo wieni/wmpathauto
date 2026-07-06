@@ -95,8 +95,18 @@ class Node extends PatternTokenDependencyProviderBase
             return null;
         }
 
-        \Drupal::moduleHandler()->loadInclude('token', 'inc', 'token.tokens');
+        // If the url exists in multiple menus, default to the one set on the
+        // node itself. Inlined from token's _token_menu_link_best_match(),
+        // which token 8.x-1.17 removed (it became a protected method on
+        // \Drupal\token\Hook\TokenTokensHooks).
+        if (\Drupal::moduleHandler()->moduleExists('menu_ui')) {
+            $defaults = menu_ui_get_menu_link_defaults($node);
 
-        return _token_menu_link_best_match($node, $links);
+            if (isset($defaults['id'], $links[$defaults['id']])) {
+                return $links[$defaults['id']];
+            }
+        }
+
+        return reset($links);
     }
 }
