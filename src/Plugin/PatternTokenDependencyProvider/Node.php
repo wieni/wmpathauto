@@ -6,6 +6,7 @@ use Drupal\Core\Entity\EntityTypeManagerInterface;
 use Drupal\Core\Menu\MenuLinkInterface;
 use Drupal\Core\Menu\MenuLinkManagerInterface;
 use Drupal\menu_link_content\MenuLinkContentInterface;
+use Drupal\menu_ui\MenuUiUtility;
 use Drupal\node\NodeInterface;
 use Drupal\wmpathauto\Annotation\PatternTokenDependencyProvider;
 use Drupal\wmpathauto\EntityAliasDependencyCollectionInterface;
@@ -95,8 +96,26 @@ class Node extends PatternTokenDependencyProviderBase
             return null;
         }
 
-        \Drupal::moduleHandler()->loadInclude('token', 'inc', 'token.tokens');
+        // If the url exists in multiple menus, default to the one set on the
+        // node itself. Inlined from token's _token_menu_link_best_match(),
+        // which token 8.x-1.17 removed (it became a protected method on
+        // \Drupal\token\Hook\TokenTokensHooks).
+        if (\Drupal::moduleHandler()->moduleExists('menu_ui')) {
+            // menu_ui_get_menu_link_defaults() is deprecated in drupal:11.4.0
+            // and removed in drupal:13.0.0 in favour of the MenuUiUtility
+            // service (https://www.drupal.org/node/3566774). Prefer the service
+            // where core provides it, and keep the procedural call for older
+            // cores that do not.
+            $container = \Drupal::getContainer();
+            $defaults = $container->has(MenuUiUtility::class)
+                ? $container->get(MenuUiUtility::class)->getMenuLinkDefaults($node)
+                : menu_ui_get_menu_link_defaults($node);
 
-        return _token_menu_link_best_match($node, $links);
+            if (isset($defaults['id'], $links[$defaults['id']])) {
+                return $links[$defaults['id']];
+            }
+        }
+
+        return reset($links);
     }
 }
