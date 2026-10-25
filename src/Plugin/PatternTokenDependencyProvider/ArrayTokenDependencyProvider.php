@@ -5,17 +5,12 @@ namespace Drupal\wmpathauto\Plugin\PatternTokenDependencyProvider;
 use Drupal\Core\Entity\EntityTypeManagerInterface;
 use Drupal\Core\Language\LanguageManagerInterface;
 use Drupal\Core\Routing\RouteProviderInterface;
-use Drupal\wmpathauto\Annotation\PatternTokenDependencyProvider;
+use Drupal\wmpathauto\Attribute\PatternTokenDependencyProvider;
 use Drupal\wmpathauto\EntityAliasDependencyCollectionInterface;
 use Drupal\wmpathauto\PatternTokenDependencyProviderBase;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
-/**
- * @PatternTokenDependencyProvider(
- *     type = "array",
- * )
- */
-#[\Drupal\wmpathauto\Attribute\PatternTokenDependencyProvider(type: 'array')]
+#[PatternTokenDependencyProvider(type: 'array')]
 class ArrayTokenDependencyProvider extends PatternTokenDependencyProviderBase
 {
     use MenuLinkEntityTrait;

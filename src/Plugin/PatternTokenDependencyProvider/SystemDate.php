@@ -3,17 +3,12 @@
 namespace Drupal\wmpathauto\Plugin\PatternTokenDependencyProvider;
 
 use Drupal\Core\Entity\EntityTypeManagerInterface;
-use Drupal\wmpathauto\Annotation\PatternTokenDependencyProvider;
+use Drupal\wmpathauto\Attribute\PatternTokenDependencyProvider;
 use Drupal\wmpathauto\EntityAliasDependencyCollectionInterface;
 use Drupal\wmpathauto\PatternTokenDependencyProviderBase;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
-/**
- * @PatternTokenDependencyProvider(
- *     type = "date",
- * )
- */
-#[\Drupal\wmpathauto\Attribute\PatternTokenDependencyProvider(type: 'date')]
+#[PatternTokenDependencyProvider(type: 'date')]
 class SystemDate extends PatternTokenDependencyProviderBase
 {
     /** @var EntityTypeManagerInterface */

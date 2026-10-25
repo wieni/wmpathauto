@@ -6,19 +6,15 @@ use Drupal\Core\Entity\ContentEntityInterface;
 use Drupal\Core\Entity\EntityRepositoryInterface;
 use Drupal\Core\Entity\FieldableEntityInterface;
 use Drupal\image\Entity\ImageStyle;
-use Drupal\wmpathauto\Annotation\PatternTokenDependencyProvider;
+use Drupal\wmpathauto\Attribute\PatternTokenDependencyProvider;
 use Drupal\wmpathauto\EntityAliasDependencyCollectionInterface;
 use Drupal\wmpathauto\PatternTokenDependencyProviderBase;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
- * @PatternTokenDependencyProvider(
- *     type = "entity",
- * )
- *
  * @see field_tokens
  */
-#[\Drupal\wmpathauto\Attribute\PatternTokenDependencyProvider(type: 'entity')]
+#[PatternTokenDependencyProvider(type: 'entity')]
 class Entity extends PatternTokenDependencyProviderBase
 {
     /** @var EntityRepositoryInterface */

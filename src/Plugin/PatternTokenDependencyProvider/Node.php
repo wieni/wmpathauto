@@ -8,20 +8,16 @@ use Drupal\Core\Menu\MenuLinkManagerInterface;
 use Drupal\menu_link_content\MenuLinkContentInterface;
 use Drupal\menu_ui\MenuUiUtility;
 use Drupal\node\NodeInterface;
-use Drupal\wmpathauto\Annotation\PatternTokenDependencyProvider;
+use Drupal\wmpathauto\Attribute\PatternTokenDependencyProvider;
 use Drupal\wmpathauto\EntityAliasDependencyCollectionInterface;
 use Drupal\wmpathauto\PatternTokenDependencyProviderBase;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
- * @PatternTokenDependencyProvider(
- *     type = "node",
- * )
- *
  * @see hook_tokens
  * @see menu_ui_tokens
  */
-#[\Drupal\wmpathauto\Attribute\PatternTokenDependencyProvider(type: 'node')]
+#[PatternTokenDependencyProvider(type: 'node')]
 class Node extends PatternTokenDependencyProviderBase
 {
     /** @var EntityTypeManagerInterface */

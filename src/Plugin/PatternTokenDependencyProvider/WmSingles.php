@@ -2,17 +2,12 @@
 
 namespace Drupal\wmpathauto\Plugin\PatternTokenDependencyProvider;
 
-use Drupal\wmpathauto\Annotation\PatternTokenDependencyProvider;
+use Drupal\wmpathauto\Attribute\PatternTokenDependencyProvider;
 use Drupal\wmpathauto\EntityAliasDependencyCollectionInterface;
 use Drupal\wmpathauto\PatternTokenDependencyProviderBase;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
-/**
- * @PatternTokenDependencyProvider(
- *     type = "wmsingles",
- * )
- */
-#[\Drupal\wmpathauto\Attribute\PatternTokenDependencyProvider(type: 'wmsingles')]
+#[PatternTokenDependencyProvider(type: 'wmsingles')]
 class WmSingles extends PatternTokenDependencyProviderBase
 {
     /** @var \Drupal\wmsingles\Service\WmSingles */
