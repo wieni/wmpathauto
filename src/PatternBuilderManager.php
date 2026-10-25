@@ -2,7 +2,6 @@
 
 namespace Drupal\wmpathauto;
 
-use Drupal\Component\Plugin\Attribute\AttributeInterface;
 use Drupal\Core\Cache\CacheBackendInterface;
 use Drupal\Core\Extension\ModuleHandlerInterface;
 use Drupal\Core\Plugin\DefaultPluginManager;
@@ -16,18 +15,14 @@ class PatternBuilderManager extends DefaultPluginManager
         CacheBackendInterface $cacheBackend,
         ModuleHandlerInterface $moduleHandler
     ) {
-        // Drupal 10.2 added attribute discovery, taking the attribute class
-        // before the annotation class; leaving it out is deprecated since 11.2.
-        $definitionClasses = interface_exists(AttributeInterface::class)
-            ? [PatternBuilderAttribute::class, PatternBuilder::class]
-            : [PatternBuilder::class];
-
+        // The annotation class keeps annotated plugins of other modules working.
         parent::__construct(
             'Plugin/PatternBuilder',
             $namespaces,
             $moduleHandler,
             PatternBuilderInterface::class,
-            ...$definitionClasses
+            PatternBuilderAttribute::class,
+            PatternBuilder::class
         );
         $this->alterInfo('wmpathauto_pattern_builder_info');
         $this->setCacheBackend($cacheBackend, 'wmpathauto_pattern_builders');

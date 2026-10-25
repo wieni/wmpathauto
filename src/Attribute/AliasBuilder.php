@@ -5,7 +5,7 @@ namespace Drupal\wmpathauto\Attribute;
 use Drupal\Component\Plugin\Attribute\Plugin;
 
 /**
- * Attribute counterpart of the AliasBuilder annotation (Drupal 10.2+).
+ * Attribute counterpart of the AliasBuilder annotation.
  *
  * @see \Drupal\wmpathauto\Annotation\AliasBuilder
  */
