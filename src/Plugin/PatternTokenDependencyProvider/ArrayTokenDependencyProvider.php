@@ -15,6 +15,7 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
  *     type = "array",
  * )
  */
+#[\Drupal\wmpathauto\Attribute\PatternTokenDependencyProvider(type: 'array')]
 class ArrayTokenDependencyProvider extends PatternTokenDependencyProviderBase
 {
     use MenuLinkEntityTrait;

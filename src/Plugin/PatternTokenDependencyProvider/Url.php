@@ -13,6 +13,7 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
  *     type = "url",
  * )
  */
+#[\Drupal\wmpathauto\Attribute\PatternTokenDependencyProvider(type: 'url')]
 class Url extends PatternTokenDependencyProviderBase
 {
     /** @var LanguageManagerInterface */

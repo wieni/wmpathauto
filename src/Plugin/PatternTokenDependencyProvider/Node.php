@@ -21,6 +21,7 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
  * @see hook_tokens
  * @see menu_ui_tokens
  */
+#[\Drupal\wmpathauto\Attribute\PatternTokenDependencyProvider(type: 'node')]
 class Node extends PatternTokenDependencyProviderBase
 {
     /** @var EntityTypeManagerInterface */

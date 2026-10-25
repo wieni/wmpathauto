@@ -13,6 +13,7 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
  *     type = "date",
  * )
  */
+#[\Drupal\wmpathauto\Attribute\PatternTokenDependencyProvider(type: 'date')]
 class SystemDate extends PatternTokenDependencyProviderBase
 {
     /** @var EntityTypeManagerInterface */

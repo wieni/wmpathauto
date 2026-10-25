@@ -12,6 +12,7 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
  *     type = "wmsingles",
  * )
  */
+#[\Drupal\wmpathauto\Attribute\PatternTokenDependencyProvider(type: 'wmsingles')]
 class WmSingles extends PatternTokenDependencyProviderBase
 {
     /** @var \Drupal\wmsingles\Service\WmSingles */

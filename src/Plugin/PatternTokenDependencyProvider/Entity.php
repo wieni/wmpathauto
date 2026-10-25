@@ -18,6 +18,7 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
  *
  * @see field_tokens
  */
+#[\Drupal\wmpathauto\Attribute\PatternTokenDependencyProvider(type: 'entity')]
 class Entity extends PatternTokenDependencyProviderBase
 {
     /** @var EntityRepositoryInterface */

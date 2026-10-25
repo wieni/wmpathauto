@@ -19,6 +19,7 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
  *     type = "menu-link",
  * )
  */
+#[\Drupal\wmpathauto\Attribute\PatternTokenDependencyProvider(type: 'menu-link')]
 class MenuLink extends PatternTokenDependencyProviderBase
 {
     use MenuLinkEntityTrait;

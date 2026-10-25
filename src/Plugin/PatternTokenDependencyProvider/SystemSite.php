@@ -13,6 +13,7 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
  *     type = "site",
  * )
  */
+#[\Drupal\wmpathauto\Attribute\PatternTokenDependencyProvider(type: 'site')]
 class SystemSite extends PatternTokenDependencyProviderBase
 {
     /** @var ConfigFactoryInterface */
