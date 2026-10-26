@@ -4,6 +4,27 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [3.2.0] - 2026-10-26
+### Added
+- Drupal 12 support.
+- `#[AliasBuilder]`, `#[PatternBuilder]`, `#[EntityAliasDependencyProvider]` and `#[PatternTokenDependencyProvider]`
+  attributes. All four plugin managers support attribute discovery, which Drupal 12 requires. Annotated plugins keep
+  working; core reports them as deprecated for Drupal 13.
+
+### Changed
+- The module's own token dependency providers, entity type and queue workers are declared with attributes instead of
+  annotations.
+- The node token dependency provider uses `MenuUiUtility::getMenuLinkDefaults()` instead of the deprecated
+  `menu_ui_get_menu_link_defaults()`.
+
+### Fixed
+- Compatibility with token 8.x-1.17, which removed `_token_menu_link_best_match()`.
+
+### Removed
+- The unreachable `DependencyDeleteSubscriber::onPathDelete()`, which used a constant removed in 3.0.1.
+- Support for Drupal before 11.4 and PHP before 8.2. The module now requires Drupal `^11.4 || ^12` and PHP 8.2 or
+  higher.
+
 ## [3.0.2] - 2023-12-18
 - Add Drupal 10 compatibility
 
