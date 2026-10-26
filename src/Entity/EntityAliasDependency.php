@@ -2,24 +2,24 @@
 
 namespace Drupal\wmpathauto\Entity;
 
+use Drupal\Core\Entity\Attribute\ContentEntityType;
 use Drupal\Core\Entity\ContentEntityBase;
 use Drupal\Core\Entity\EntityInterface;
 use Drupal\Core\Entity\EntityTypeInterface;
 use Drupal\Core\Entity\TranslatableInterface;
 use Drupal\Core\Field\BaseFieldDefinition;
+use Drupal\Core\StringTranslation\TranslatableMarkup;
 use Drupal\wmpathauto\EntityAliasDependencyInterface;
 
-/**
- * @ContentEntityType(
- *     id = "entity_alias_dependency",
- *     label = @Translation("Entity alias dependency"),
- *     base_table = "entity_alias_dependency",
- *     translatable = FALSE,
- *     entity_keys = {
- *         "id" : "did",
- *     },
- * )
- */
+#[ContentEntityType(
+    id: 'entity_alias_dependency',
+    label: new TranslatableMarkup('Entity alias dependency'),
+    base_table: 'entity_alias_dependency',
+    translatable: false,
+    entity_keys: [
+        'id' => 'did',
+    ],
+)]
 class EntityAliasDependency extends ContentEntityBase implements EntityAliasDependencyInterface
 {
     public static function baseFieldDefinitions(EntityTypeInterface $entityType)
