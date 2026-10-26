@@ -3,16 +3,12 @@
 namespace Drupal\wmpathauto\Plugin\PatternTokenDependencyProvider;
 
 use Drupal\Core\Config\ConfigFactoryInterface;
-use Drupal\wmpathauto\Annotation\PatternTokenDependencyProvider;
+use Drupal\wmpathauto\Attribute\PatternTokenDependencyProvider;
 use Drupal\wmpathauto\EntityAliasDependencyCollectionInterface;
 use Drupal\wmpathauto\PatternTokenDependencyProviderBase;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
-/**
- * @PatternTokenDependencyProvider(
- *     type = "site",
- * )
- */
+#[PatternTokenDependencyProvider(type: 'site')]
 class SystemSite extends PatternTokenDependencyProviderBase
 {
     /** @var ConfigFactoryInterface */

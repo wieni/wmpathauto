@@ -3,16 +3,12 @@
 namespace Drupal\wmpathauto\Plugin\PatternTokenDependencyProvider;
 
 use Drupal\Core\Language\LanguageManagerInterface;
-use Drupal\wmpathauto\Annotation\PatternTokenDependencyProvider;
+use Drupal\wmpathauto\Attribute\PatternTokenDependencyProvider;
 use Drupal\wmpathauto\EntityAliasDependencyCollectionInterface;
 use Drupal\wmpathauto\PatternTokenDependencyProviderBase;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
-/**
- * @PatternTokenDependencyProvider(
- *     type = "url",
- * )
- */
+#[PatternTokenDependencyProvider(type: 'url')]
 class Url extends PatternTokenDependencyProviderBase
 {
     /** @var LanguageManagerInterface */

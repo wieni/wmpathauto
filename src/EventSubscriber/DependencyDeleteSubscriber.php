@@ -32,18 +32,6 @@ class DependencyDeleteSubscriber implements EventSubscriberInterface
         return $events;
     }
 
-    public function onPathDelete(array $path): void
-    {
-        if (!$this->isSchemaInstalled()) {
-            return;
-        }
-
-        $this->repository->deleteDependenciesByType(
-            EntityAliasDependencyInterface::TYPE_PATH_ALIAS,
-            (int) $path['pid']
-        );
-    }
-
     public function onConfigDelete(ConfigCrudEvent $event): void
     {
         if (!$this->isSchemaInstalled()) {

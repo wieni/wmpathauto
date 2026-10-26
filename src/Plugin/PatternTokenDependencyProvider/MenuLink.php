@@ -9,16 +9,12 @@ use Drupal\Core\Menu\MenuLinkManagerInterface;
 use Drupal\Core\Routing\RouteProviderInterface;
 use Drupal\menu_link_content\MenuLinkContentInterface;
 use Drupal\menu_link_content\Plugin\Menu\MenuLinkContent;
-use Drupal\wmpathauto\Annotation\PatternTokenDependencyProvider;
+use Drupal\wmpathauto\Attribute\PatternTokenDependencyProvider;
 use Drupal\wmpathauto\EntityAliasDependencyCollectionInterface;
 use Drupal\wmpathauto\PatternTokenDependencyProviderBase;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
-/**
- * @PatternTokenDependencyProvider(
- *     type = "menu-link",
- * )
- */
+#[PatternTokenDependencyProvider(type: 'menu-link')]
 class MenuLink extends PatternTokenDependencyProviderBase
 {
     use MenuLinkEntityTrait;

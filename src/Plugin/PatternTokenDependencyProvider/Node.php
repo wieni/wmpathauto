@@ -6,20 +6,18 @@ use Drupal\Core\Entity\EntityTypeManagerInterface;
 use Drupal\Core\Menu\MenuLinkInterface;
 use Drupal\Core\Menu\MenuLinkManagerInterface;
 use Drupal\menu_link_content\MenuLinkContentInterface;
+use Drupal\menu_ui\MenuUiUtility;
 use Drupal\node\NodeInterface;
-use Drupal\wmpathauto\Annotation\PatternTokenDependencyProvider;
+use Drupal\wmpathauto\Attribute\PatternTokenDependencyProvider;
 use Drupal\wmpathauto\EntityAliasDependencyCollectionInterface;
 use Drupal\wmpathauto\PatternTokenDependencyProviderBase;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
- * @PatternTokenDependencyProvider(
- *     type = "node",
- * )
- *
  * @see hook_tokens
  * @see menu_ui_tokens
  */
+#[PatternTokenDependencyProvider(type: 'node')]
 class Node extends PatternTokenDependencyProviderBase
 {
     /** @var EntityTypeManagerInterface */
@@ -95,8 +93,18 @@ class Node extends PatternTokenDependencyProviderBase
             return null;
         }
 
-        \Drupal::moduleHandler()->loadInclude('token', 'inc', 'token.tokens');
+        // If the url exists in multiple menus, default to the one set on the
+        // node itself. Inlined from token's _token_menu_link_best_match(),
+        // which token 8.x-1.17 removed (it became a protected method on
+        // \Drupal\token\Hook\TokenTokensHooks).
+        if (\Drupal::moduleHandler()->moduleExists('menu_ui')) {
+            $defaults = \Drupal::service(MenuUiUtility::class)->getMenuLinkDefaults($node);
 
-        return _token_menu_link_best_match($node, $links);
+            if (isset($defaults['id'], $links[$defaults['id']])) {
+                return $links[$defaults['id']];
+            }
+        }
+
+        return reset($links);
     }
 }

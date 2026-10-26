@@ -6,6 +6,7 @@ use Drupal\Core\Cache\CacheBackendInterface;
 use Drupal\Core\Extension\ModuleHandlerInterface;
 use Drupal\Core\Plugin\DefaultPluginManager;
 use Drupal\wmpathauto\Annotation\PatternBuilder;
+use Drupal\wmpathauto\Attribute\PatternBuilder as PatternBuilderAttribute;
 
 class PatternBuilderManager extends DefaultPluginManager
 {
@@ -14,11 +15,13 @@ class PatternBuilderManager extends DefaultPluginManager
         CacheBackendInterface $cacheBackend,
         ModuleHandlerInterface $moduleHandler
     ) {
+        // The annotation class keeps annotated plugins of other modules working.
         parent::__construct(
             'Plugin/PatternBuilder',
             $namespaces,
             $moduleHandler,
             PatternBuilderInterface::class,
+            PatternBuilderAttribute::class,
             PatternBuilder::class
         );
         $this->alterInfo('wmpathauto_pattern_builder_info');

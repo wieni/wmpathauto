@@ -2,22 +2,21 @@
 
 namespace Drupal\wmpathauto\Plugin\QueueWorker;
 
-use Drupal\Core\Annotation\QueueWorker;
 use Drupal\Core\Cache\CacheTagsInvalidatorInterface;
 use Drupal\Core\Entity\ContentEntityInterface;
 use Drupal\Core\Entity\EntityTypeManagerInterface;
 use Drupal\Core\Plugin\ContainerFactoryPluginInterface;
+use Drupal\Core\Queue\Attribute\QueueWorker;
 use Drupal\Core\Queue\QueueWorkerBase;
+use Drupal\Core\StringTranslation\TranslatableMarkup;
 use Drupal\pathauto\PathautoGeneratorInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
-/**
- * @QueueWorker(
- *     id = \Drupal\wmpathauto\Plugin\QueueWorker\AliasQueueWorker::ID,
- *     title = @Translation("Regenerate alias for entities that depend on another alias."),
- *     cron = {"time" : 30}
- * )
- */
+#[QueueWorker(
+    id: self::ID,
+    title: new TranslatableMarkup('Regenerate alias for entities that depend on another alias.'),
+    cron: ['time' => 30],
+)]
 class AliasQueueWorker extends QueueWorkerBase implements ContainerFactoryPluginInterface
 {
     public const ID = 'wmpathauto.alias.queue';

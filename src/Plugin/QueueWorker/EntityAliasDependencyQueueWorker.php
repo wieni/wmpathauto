@@ -2,22 +2,21 @@
 
 namespace Drupal\wmpathauto\Plugin\QueueWorker;
 
-use Drupal\Core\Annotation\QueueWorker;
 use Drupal\Core\Entity\ContentEntityInterface;
 use Drupal\Core\Entity\EntityTypeManagerInterface;
 use Drupal\Core\Plugin\ContainerFactoryPluginInterface;
+use Drupal\Core\Queue\Attribute\QueueWorker;
 use Drupal\Core\Queue\QueueWorkerBase;
+use Drupal\Core\StringTranslation\TranslatableMarkup;
 use Drupal\wmpathauto\EntityAliasDependencyRepositoryInterface;
 use Drupal\wmpathauto\EntityAliasDependencyResolverInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
-/**
- * @QueueWorker(
- *     id = \Drupal\wmpathauto\Plugin\QueueWorker\EntityAliasDependencyQueueWorker::ID,
- *     title = @Translation("Calculate dependencies of entity aliases."),
- *     cron = {"time" : 30}
- * )
- */
+#[QueueWorker(
+    id: self::ID,
+    title: new TranslatableMarkup('Calculate dependencies of entity aliases.'),
+    cron: ['time' => 30],
+)]
 class EntityAliasDependencyQueueWorker extends QueueWorkerBase implements ContainerFactoryPluginInterface
 {
     public const ID = 'wmpathauto.entity_alias_dependency.queue';
