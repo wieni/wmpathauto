@@ -20,7 +20,7 @@ class PatternBuilderSubscriber implements EventSubscriberInterface
         $this->patternBuilderManager = $patternBuilderManager;
     }
 
-    public static function getSubscribedEvents()
+    public static function getSubscribedEvents(): array
     {
         $events[PatternAlterEvent::NAME][] = ['onPatternAlter'];
 

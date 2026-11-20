@@ -20,7 +20,7 @@ class AliasBuilderSubscriber implements EventSubscriberInterface
         $this->aliasBuilderManager = $aliasBuilderManager;
     }
 
-    public static function getSubscribedEvents()
+    public static function getSubscribedEvents(): array
     {
         $events[AliasAlterEvent::NAME][] = ['onAliasAlter'];
 
