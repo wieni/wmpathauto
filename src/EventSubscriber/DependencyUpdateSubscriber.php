@@ -30,7 +30,7 @@ class DependencyUpdateSubscriber implements EventSubscriberInterface
         $this->repository = $repository;
     }
 
-    public static function getSubscribedEvents()
+    public static function getSubscribedEvents(): array
     {
         $events[ConfigEvents::SAVE][] = ['onConfigUpdate'];
 
